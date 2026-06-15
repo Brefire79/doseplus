@@ -1,0 +1,10 @@
+# Local Claude Code settings (machine-specific)
+.claude/settings.local.json
+
+# Dependencies (none committed — app is single-file + CDN)
+node_modules/
+
+# OS / editor
+Thumbs.db
+.DS_Store
+*.log

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accordion Relatório de Acompanhamento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #7a9fa6;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .main-title {
+            font-size: 36px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .main-title .italic {
+            font-style: italic;
+            color: #17a2b8;
+        }
+
+        /* Accordion Container */
+        .accordion-container {
+            background: white;
+            border: 3px solid #ffc107;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Accordion Header - Trigger */
+        .accordion-header {
+            background: #1a4d59;
+            color: white;
+            padding: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+
+        .accordion-header:hover {
+            background-color: #145266;
+        }
+
+        .accordion-header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .accordion-header-text h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .accordion-header-text p {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        /* Arrow Icon */
+        .accordion-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-arrow svg {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .accordion-header.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Accordion Body */
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-body.active {
+            max-height: 500px;
+        }
+
+        .accordion-content {
+            padding: 24px;
+            background: #f9f9f9;
+        }
+
+        /* Button Grid */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: #2a6a7a;
+            color: white;
+            border: 1px solid #1a4d59;
+        }
+
+        .btn-secondary:hover {
+            background: #1a4d59;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: #1ed760;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1aa34a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-light {
+            background: #e8e8e8;
+            color: #333;
+        }
+
+        .btn-light:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Icon Style */
+        .btn-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 24px;
+            }
+
+            .accordion-header {
+                padding: 16px;
+            }
+
+            .accordion-header-text h3 {
+                font-size: 16px;
+            }
+
+            .accordion-header-text p {
+                display: none;
+            }
+
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .accordion-content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="section-title">Relatório Médico</div>
+            <div class="main-title">
+                Prontuário <span class="italic">de acompanhamento</span>
+            </div>
+        </div>
+
+        <!-- Accordion -->
+        <div class="accordion-container">
+            <!-- Accordion Header (Trigger) -->
+            <div class="accordion-header" onclick="toggleAccordion(event)">
+                <div class="accordion-header-content">
+                    <div class="accordion-header-text">
+                        <h3>Relatório clínico · padrão SOAP</h3>
+                        <p>Documento estruturado de acompanhamento com análise integrada</p>
+                    </div>
+                </div>
+                <div class="accordion-arrow">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Accordion Body (Content) -->
+            <div class="accordion-body">
+                <div class="accordion-content">
+                    <div class="button-grid">
+                        <!-- PDF Button -->
+                        <button class="btn btn-secondary" onclick="handleDownload('PDF')">
+                            <span class="btn-icon">📄</span>
+                            PDF
+                        </button>
+
+                        <!-- CSV Button -->
+                        <button class="btn btn-secondary" onclick="handleDownload('CSV')">
+                            <span class="btn-icon">⬇️</span>
+                            CSV
+                        </button>
+
+                        <!-- JSON Button -->
+                        <button class="btn btn-secondary" onclick="handleDownload('JSON')">
+                            <span class="btn-icon">{}</span>
+                            JSON
+                        </button>
+
+                        <!-- Print Button -->
+                        <button class="btn btn-secondary" onclick="handlePrint()">
+                            <span class="btn-icon">🖨️</span>
+                            Imprimir
+                        </button>
+
+                        <!-- WhatsApp Button -->
+                        <button class="btn btn-primary" onclick="handleShare('whatsapp')">
+                            <span class="btn-icon">💬</span>
+                            WhatsApp
+                        </button>
+
+                        <!-- Email Button -->
+                        <button class="btn btn-light" onclick="handleShare('email')">
+                            <span class="btn-icon">📧</span>
+                            E-mail
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Accordion
+        function toggleAccordion(event) {
+            const header = event.currentTarget;
+            const body = header.nextElementSibling;
+
+            // Toggle active classes
+            header.classList.toggle('active');
+            body.classList.toggle('active');
+        }
+
+        // Handle Downloads
+        function handleDownload(format) {
+            console.log(`Baixando em formato ${format}...`);
+            alert(`Download iniciado: Relatório em ${format}`);
+            // Aqui você coloca a lógica real de download
+        }
+
+        // Handle Print
+        function handlePrint() {
+            console.log('Abrindo impressão...');
+            window.print();
+        }
+
+        // Handle Share
+        function handleShare(platform) {
+            if (platform === 'whatsapp') {
+                const message = encodeURIComponent('Olá! Veja meu relatório de acompanhamento: ');
+                window.open(`https://wa.me/?text=${message}`, '_blank');
+            } else if (platform === 'email') {
+                const subject = encodeURIComponent('Relatório de Acompanhamento Clínico');
+                const body = encodeURIComponent('Segue em anexo o meu relatório de acompanhamento clínico...');
+                window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            }
+        }
+    </script>
+</body>
+</html>
