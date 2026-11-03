@@ -12,8 +12,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="DOSE Plus" />
 <title>GLP Monitor · Emagrecedores</title>
+<meta name="description" content="Acompanhamento do tratamento com GLP-1 / GIP: doses, peso, medidas e relatório. Funciona offline; os dados ficam no seu aparelho." />
+<meta property="og:title" content="DOSE Plus" />
+<meta property="og:description" content="Acompanhamento do tratamento com GLP-1 / GIP: doses, peso, medidas e relatório." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://doseplus.netlify.app/og-image.png" />
 <link rel="manifest" href="manifest.json" />
-<link rel="apple-touch-icon" href="icon-192.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -46,11 +53,16 @@ body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(
 .update-banner{position:fixed;top:0;left:0;right:0;z-index:9999;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 14px;background:var(--tg-deep);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;transform:translateY(-110%);transition:transform .35s cubic-bezier(.22,1,.36,1);box-shadow:0 4px 20px rgba(0,0,0,.35)}
 .update-banner.show{transform:translateY(0)}
 .update-banner-text{font-size:14px;font-weight:500;line-height:1.3}
+.app-version-footer{text-align:center;font-size:11px;color:var(--tg-mist);margin:24px 0 8px;letter-spacing:.04em}
+.app-version-line{font-size:12px;color:var(--tg-mist);margin-top:4px;line-height:1.4;overflow-wrap:anywhere}
 .update-banner-btn{background:var(--tg-accent);color:#fff;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding:8px 0;gap:12px;position:relative;z-index:10}
 .brand{display:flex;align-items:center;gap:14px;min-width:0}
 .brand-mark{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--tg-deep),var(--tg-core) 50%,var(--tg-accent));display:grid;place-items:center;box-shadow:0 6px 18px rgba(11,59,60,.35),inset 0 1px 0 rgba(255,255,255,.15);flex-shrink:0}
 .brand-mark svg{width:24px;height:24px;color:var(--tg-sand)}
+/* v2.6.1: círculo vermelho em volta do símbolo — marcador visual para confirmar que a atualização chegou */
+.brand-mark{position:relative}
+.brand-mark::after{content:'';position:absolute;inset:-9px;border:2.5px solid var(--tg-rose);border-radius:50%;pointer-events:none}
 .brand h1{font-family:var(--font-display);font-weight:500;font-size:clamp(18px,5vw,22px);letter-spacing:-.02em;line-height:1}
 .brand h1 em{font-style:italic;color:var(--tg-accent);font-weight:400}
 .brand p{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tg-mist);font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -688,6 +700,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
     </div>
     <div class="section-title"><h3>Aplicações recentes</h3><a class="link" onclick="showView('apps')">Ver todas</a></div>
     <div id="recent-apps" class="timeline"></div>
+    <div class="app-version-footer" id="dash-version"></div>
   </section>
 
   <section class="view" id="view-new-app">
@@ -1039,12 +1052,18 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
         <div style="flex:1;min-width:200px">
           <div style="font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--tg-core);margin-bottom:4px">Atualização de app</div>
           <div style="font-size:13px;color:var(--tg-slate);line-height:1.4">Verificar se há nova versão disponível</div>
+          <div class="app-version-line" id="settings-version"></div>
+          <div class="app-version-line" id="settings-cache" style="display:none"></div>
         </div>
-        <button class="btn btn-accent" onclick="checkForUpdates()" style="white-space:nowrap;flex-shrink:0">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          Verificar
-        </button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0">
+          <button class="btn btn-accent" onclick="checkForUpdates()" style="white-space:nowrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Verificar
+          </button>
+          <button class="btn btn-ghost" onclick="openForceUpdateModal()" style="white-space:nowrap">Forçar atualização</button>
+        </div>
       </div>
+      <div class="app-version-line" id="update-check-status" style="display:none;font-size:13px;color:var(--tg-slate);margin-top:10px"></div>
     </div>
     <div class="card">
       <div class="form-grid">
@@ -1210,6 +1229,23 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Fazer backup antes de sair
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FORCE UPDATE MODAL (v2.6.1) ============ -->
+  <div class="import-modal-overlay" id="force-update-modal-overlay" onclick="closeForceUpdateModalOuter(event)">
+    <div class="import-modal">
+      <h3 style="margin-bottom:8px">Forçar atualização?</h3>
+      <div style="font-size:14px;color:var(--tg-slate);margin-bottom:16px;line-height:1.6">O app vai limpar a cópia offline do aplicativo e recarregar a versão mais recente do servidor. <strong>Seus dados não são apagados.</strong></div>
+      <div class="alert alert-warn" style="margin-bottom:16px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div>Precisa de internet. Salve o que estiver digitando antes de continuar.</div>
+      </div>
+      <div id="force-update-error" class="alert alert-danger" style="display:none;margin-bottom:16px"><div id="force-update-error-text"></div></div>
+      <div style="display:grid;gap:10px">
+        <button class="btn btn-accent btn-block" id="force-update-confirm" onclick="executeForceUpdate()">Sim, atualizar agora</button>
+        <button class="btn btn-ghost btn-block" onclick="closeForceUpdateModal()">Cancelar</button>
       </div>
     </div>
   </div>
@@ -1396,7 +1432,7 @@ const DRUGS_ORDER = ['saxenda','victoza','ozempic','wegovy','trulicity','mounjar
    • Relatório SOAP multi-fase com comparativo
    Backward compatible: dados de instalações 1.x/2.0 migrados automaticamente.
 */
-const APP_VERSION = '2.5.0';
+const APP_VERSION = '2.6.1';
 let _justSaved = false;
 
 /* ================== STATE ================== */
@@ -4183,6 +4219,25 @@ function saveCfg(){
 
 /* ================== SW + UPDATE BANNER ================== */
 let updateRegistration=null;
+// v2.6.1: versão instalada e cache ativo (somente leitura; textContent, sem dado dinâmico em HTML)
+function renderVersionInfo(){
+  const label='v'+APP_VERSION;
+  const dash=document.getElementById('dash-version');
+  if(dash)dash.textContent='DOSE Plus '+label;
+  const sv=document.getElementById('settings-version');
+  if(sv)sv.textContent='Versão instalada: '+label;
+  const sc=document.getElementById('settings-cache');
+  if(!sc||!('caches' in window))return;
+  try{
+    caches.keys().then(keys=>{
+      const ours=keys.filter(k=>k.indexOf('dosecheck-')===0);
+      if(!ours.length){sc.style.display='none';return;}
+      sc.textContent='Cache: '+ours.join(', ');
+      sc.style.display='';
+    }).catch(()=>{sc.style.display='none';});
+  }catch(_){sc.style.display='none';}
+}
+renderVersionInfo();
 function showUpdateBanner(worker){
   const banner=document.getElementById('update-banner');
   if(!banner)return;
@@ -4193,31 +4248,72 @@ function showUpdateBanner(worker){
     worker.postMessage({type:'SKIP_WAITING'});
   };
 }
+function setUpdateStatus(msg){
+  const el=document.getElementById('update-check-status');
+  if(!el)return;
+  el.textContent=msg||'';
+  el.style.display=msg?'':'none';
+}
 function checkForUpdates(){
-  if(!updateRegistration)return;
+  if(!updateRegistration){setUpdateStatus('Verificação indisponível neste navegador (Service Worker inativo).');return;}
+  // v2.6.1: o resultado aparece no próprio card; o banner do topo só surge quando há versão nova
+  // (antes ele piscava "✓ Versão atualizada" com o botão "Atualizar agora" sem função).
   const banner=document.getElementById('update-banner');
-  if(banner)banner.querySelector('.update-banner-text').textContent='🔄 Verificando…';
+  setUpdateStatus('Verificando…');
   updateRegistration.update().then(()=>{
+    const pending=updateRegistration.waiting||updateRegistration.installing;
+    setUpdateStatus(pending?'Nova versão disponível — toque em Atualizar.':'Você está na versão mais recente (v'+APP_VERSION+').');
     if(updateRegistration.waiting){
+      if(banner)banner.querySelector('.update-banner-text').textContent='🚀 Nova versão disponível!';
       showUpdateBanner(updateRegistration.waiting);
-    }else if(banner&&!banner.classList.contains('show')){
-      banner.querySelector('.update-banner-text').textContent='✓ Versão atualizada';
-      banner.classList.add('show');
-      setTimeout(()=>banner.classList.remove('show'),3000);
     }
   }).catch(()=>{
-    if(banner){
-      banner.querySelector('.update-banner-text').textContent='⚠ Erro ao verificar atualização';
-      banner.classList.add('show');
-      setTimeout(()=>banner.classList.remove('show'),3000);
-    }
+    setUpdateStatus('Não foi possível verificar agora. Confira a conexão e tente de novo.');
   });
+}
+// v2.6.1: forçar atualização — remove SW e caches do app (prefixo dosecheck-) e recarrega.
+// NÃO toca em localStorage, sessionStorage nem IndexedDB: os dados do usuário ficam intactos.
+function openForceUpdateModal(){
+  const err=document.getElementById('force-update-error');
+  if(err)err.style.display='none';
+  const btn=document.getElementById('force-update-confirm');
+  const offline=(typeof navigator.onLine==='boolean')&&!navigator.onLine;
+  if(btn){btn.disabled=offline;btn.textContent=offline?'Sem conexão — conecte-se para atualizar':'Sim, atualizar agora';}
+  document.getElementById('force-update-modal-overlay').classList.add('open');
+}
+function closeForceUpdateModal(){
+  document.getElementById('force-update-modal-overlay').classList.remove('open');
+}
+function closeForceUpdateModalOuter(e){
+  if(e.target===document.getElementById('force-update-modal-overlay'))closeForceUpdateModal();
+}
+async function executeForceUpdate(){
+  const btn=document.getElementById('force-update-confirm');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Atualizando…';}
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(k=>k.indexOf('dosecheck-')===0).map(k=>caches.delete(k)));
+    }
+    location.reload();
+  }catch(e){
+    const err=document.getElementById('force-update-error');
+    const txt=document.getElementById('force-update-error-text');
+    if(txt)txt.textContent='Não foi possível forçar a atualização. Seus dados continuam salvos. Tente fechar e abrir o app novamente.';
+    if(err)err.style.display='';
+    if(btn){btn.disabled=false;btn.textContent='Tentar de novo';}
+  }
 }
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('sw.js').then(reg=>{
       console.log('[APP] Service Worker registrado com sucesso!', reg);
       updateRegistration=reg;
+      navigator.serviceWorker.ready.then(()=>renderVersionInfo()).catch(()=>{});
       // Força checagem de nova versão toda vez que o app abre (com pequeno delay)
       setTimeout(()=>reg.update(),500);
       if(reg.waiting)showUpdateBanner(reg.waiting);

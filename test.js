@@ -302,6 +302,26 @@ async function main() {
     });
   } else todo('LOTE C — analyzeCase()/DRUGS indisponíveis');
 
+  /* ---------------- v2.6.1 · sincronia de versão ---------------- */
+  section('v2.6.1 · versão do app ↔ cache do SW ↔ assets');
+  const swSrc = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
+  await test('APP_VERSION do index.html bate com o sufixo do CACHE do sw.js', () => {
+    const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    const v = (html.match(/const APP_VERSION\s*=\s*'([^']+)'/) || [])[1];
+    const c = (swSrc.match(/const CACHE\s*=\s*'dosecheck-v([^']+)'/) || [])[1];
+    ok(v, 'APP_VERSION não encontrado no index.html');
+    ok(c, 'CACHE dosecheck-v* não encontrado no sw.js');
+    eq(c, v, 'CACHE do sw.js deve ser dosecheck-v + APP_VERSION');
+  });
+  await test('todo arquivo listado em ASSETS do sw.js existe na pasta', () => {
+    const m = swSrc.match(/const ASSETS\s*=\s*\[([\s\S]*?)\]/);
+    ok(m, 'ASSETS não encontrado no sw.js');
+    const files = (m[1].match(/'([^']+)'/g) || []).map(s => s.slice(1, -1)).filter(f => f !== './');
+    ok(files.length > 0, 'ASSETS vazio');
+    const missing = files.filter(f => !fs.existsSync(path.join(__dirname, f)));
+    eq(missing.join(', '), '', 'arquivos ausentes');
+  });
+
   /* ---------------- SUMMARY ---------------- */
   console.log(`\n==============================`);
   console.log(`Passou: ${pass}  |  Falhou: ${fail}  |  Pendente (TODO): ${skipped}`);

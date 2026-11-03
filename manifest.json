@@ -2,6 +2,7 @@
   "name": "GLP Monitor · Emagrecedores",
   "short_name": "GLP Monitor",
   "description": "Acompanhamento clínico de tratamento com agonistas GLP-1 / GIP (Ozempic, Wegovy, Mounjaro, Saxenda e outros).",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

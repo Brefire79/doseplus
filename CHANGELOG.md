@@ -2,6 +2,35 @@
 
 Formato: épico de hardening executado em lotes (ver [PRD](PRD_HARDENING_DOSECHECK_PLUS_V2.md) e [prompt](PROMPT-glp-monitor-hardening-v2.md)).
 
+## [2.6.1] — 2026-11-03 — Versão visível, atualização forçada e ícones do navegador
+
+### Versão e atualização
+- `APP_VERSION` `2.5.0` → `2.6.1` (estava desatualizada e sem uso). Agora aparece no rodapé do Painel e no card "Atualização de app" das Preferências, junto com o cache do SW ativo (lido via `caches.keys()`; a linha some se não houver acesso). Tudo via `textContent`.
+- "Verificar" mostra o resultado no próprio card: "Você está na versão mais recente (v2.6.1)" ou "Nova versão disponível — toque em Atualizar". O banner do topo agora só aparece quando há versão nova (antes piscava "✓ Versão atualizada"/"⚠ Erro" com o botão "Atualizar agora" sem função).
+- Novo botão **"Forçar atualização"** com modal de confirmação: remove os registros do SW, apaga só os caches com prefixo `dosecheck-` e recarrega. **Não toca em `localStorage`, `sessionStorage` nem IndexedDB.** Botão desabilitado quando `navigator.onLine` é falso.
+
+- **Marcador visual da atualização:** círculo vermelho (`--tg-rose`) em volta do símbolo da marca no cabeçalho, para confirmar de relance que a v2.6.1 carregou. Só CSS (`.brand-mark::after`); remover quando não for mais necessário.
+
+### Service Worker
+- Cache `dosecheck-v2.6` → `dosecheck-v2.6.1`; `ASSETS` inclui `apple-touch-icon.png`, `favicon-16.png`, `favicon-32.png`, `favicon.ico`.
+- Navegação (`req.mode === 'navigate'`) passa a ser **network-first** com fallback ao cache (`index.html`), para um deploy novo aparecer já na 1ª abertura com rede. Assets locais e CDN seguem stale-while-revalidate.
+
+### Ícones e metadados
+- `apple-touch-icon.png` 180×180 **opaco** sobre fundo sand `#F5F1EA` (sem cantos pretos no iOS); `favicon-16/32.png` + `favicon.ico` (16/32/48); `og-image.png` 1200×630.
+- `<head>`: `rel="icon"`, `apple-touch-icon` 180, `meta description` e `og:title/description/type/image` (`https://doseplus.netlify.app/og-image.png`). CSP inalterada (`img-src 'self'` já cobre).
+- `manifest.json`: `"id": "./"`.
+
+### Sincronia de versão
+- Pasta do projeto e pacotes de deploy renomeados para o nome real do site (`doseplus.netlify.app`): pasta `doseplus/`, zips `doseplus-vX.Y.Z-netlify.zip`.
+- `test.js`: falha se `APP_VERSION` ≠ sufixo do `CACHE` do `sw.js` ou se algum arquivo de `ASSETS` não existir. AGENTS/CLAUDE/README atualizados.
+
+### Trade-offs
+- Quem está na v2.6.0 ainda precisa tocar em "Atualizar" no banner uma vez: a estratégia network-first só vale depois que o SW v2.6.1 estiver ativo.
+- "Forçar atualização" sem rede deixaria o app sem cópia offline até reconectar — por isso o botão é bloqueado offline e o modal avisa.
+- `og:image` usa URL absoluta do domínio `doseplus.netlify.app`; outro domínio exige ajuste.
+- `og-image.png` não entra no pré-cache (só serve para pré-visualização de links).
+- Sem alteração em `analyzeCase()`, `DRUGS`, schema (segue 5) ou chaves de storage.
+
 ## [2.6.0] — 2026-11-02 — Otimização mobile (somente layout)
 
 - Card "Última aplicação": a tag do medicamento deixou de ser `position:absolute` no mobile e entra no fluxo, sem sobrepor o rótulo nem o anel de dias (360px/320px).

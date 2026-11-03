@@ -1,5 +1,6 @@
-const CACHE = 'dosecheck-v2.6';
-const ASSETS = ['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
+const CACHE = 'dosecheck-v2.6.1';
+const ASSETS = ['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./icon-maskable-512.png',
+  './apple-touch-icon.png','./favicon-32.png','./favicon-16.png','./favicon.ico'];
 // Hosts de CDN elegíveis a stale-while-revalidate (cache-first + revalidação em background)
 const CDN_HOSTS = ['cdn.jsdelivr.net','cdnjs.cloudflare.com','fonts.googleapis.com','fonts.gstatic.com'];
 
@@ -35,6 +36,27 @@ self.addEventListener('fetch', e => {
   const isCDN = CDN_HOSTS.indexOf(url.hostname) !== -1;
   const cacheable = (res) =>
     res && res.status === 200 && (res.type === 'basic' || (isCDN && (res.type === 'cors' || res.type === 'opaque')));
+
+  // v2.6.1: navegação (abrir/recarregar o app) é network-first — um deploy novo aparece já na
+  // 1ª abertura com rede. Sem rede, cai no cache (offline continua funcionando).
+  if (req.mode === 'navigate') {
+    e.respondWith(
+      fetch(req)
+        .then(res => {
+          if (cacheable(res)) {
+            const clone = res.clone();
+            caches.open(CACHE).then(c => c.put(req, clone));
+          }
+          return res;
+        })
+        .catch(() =>
+          caches.match(req, { ignoreSearch: true })
+            .then(cached => cached || caches.match('./index.html'))
+            .then(cached => cached || new Response('Service Worker offline', { status: 503 }))
+        )
+    );
+    return;
+  }
 
   e.respondWith(
     caches.match(req)

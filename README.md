@@ -4,6 +4,8 @@ Acompanhamento clínico completo para tratamento com **agonistas GLP-1 / GIP**. 
 
 **Stack:** Vanilla JS + localStorage + Chart.js + jsPDF + PapaParse · single-file HTML · 100% offline-first.
 
+**Versão atual:** 2.6.1 (visível no rodapé do Painel e em Preferências → Atualização de app).
+
 ---
 
 ## Medicamentos suportados
@@ -71,7 +73,7 @@ Todas as sugestões são **educacionais**. O PDF traz disclaimer em todas as pá
 
 ## Deploy rápido
 
-**Netlify manual (site existente):** abra o site no painel da Netlify, entre em **Deploys** e arraste `DoseCheck-Plus-v2.5.0-netlify.zip` para a área de deploy manual. O ZIP deve ter `index.html` diretamente na raiz.
+**Netlify manual (site existente):** abra o site no painel da Netlify, entre em **Deploys** e arraste `doseplus-v2.6.1-netlify.zip` para a área de deploy manual. O ZIP deve ter `index.html` diretamente na raiz.
 
 **Netlify Drop (site novo):** arraste o mesmo ZIP em https://app.netlify.com/drop.
 

@@ -7,7 +7,7 @@ Regras para qualquer agente de IA (Claude Code, Codex, Cursor etc.) trabalhando 
 PWA médico **single-file** que acompanha tratamento com agonistas GLP-1/GIP (Ozempic, Mounjaro, Wegovy, Saxenda…). Codinome interno: *GLP Monitor*. Produção: Vianexx.
 
 - `index.html` — **todo o app** (HTML + CSS + Vanilla JS inline). ~235 KB.
-- `sw.js` — Service Worker, cache offline-first (`dosecheck-v2.3`).
+- `sw.js` — Service Worker, cache offline-first (`dosecheck-v2.6.1`, sempre `dosecheck-v` + `APP_VERSION`).
 - `manifest.json`, `icon-192.png`, `icon-512.png` — PWA.
 - `netlify.toml` — deploy.
 
@@ -54,5 +54,5 @@ Há um épico de hardening em andamento — ver [PRD](PRD_HARDENING_DOSECHECK_PL
 ## Ao entregar mudanças
 
 - Atualize o `CHANGELOG.md` com cada mudança e trade-offs.
-- Ao mexer no SW, **bump a versão do cache** (`dosecheck-v2.3` → próxima) senão o cache velho persiste.
+- Ao mexer no SW, **bump a versão do cache** (`dosecheck-v2.6.1` → próxima, igual a `APP_VERSION` no `index.html`) senão o cache velho persiste.
 - Verifique a Definição de Pronto do PRD antes de declarar pronto.
