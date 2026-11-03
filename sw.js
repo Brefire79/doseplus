@@ -1,5 +1,5 @@
-const CACHE = 'dosecheck-v2.4';
-const ASSETS = ['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
+const CACHE = 'dosecheck-v2.6';
+const ASSETS = ['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 // Hosts de CDN elegíveis a stale-while-revalidate (cache-first + revalidação em background)
 const CDN_HOSTS = ['cdn.jsdelivr.net','cdnjs.cloudflare.com','fonts.googleapis.com','fonts.gstatic.com'];
 

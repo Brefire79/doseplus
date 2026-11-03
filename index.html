@@ -41,7 +41,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 input,select,textarea{font-family:inherit;color:inherit}
 a{color:inherit;text-decoration:none}
 body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(circle at 15% 10%,rgba(20,160,152,.08),transparent 40%),radial-gradient(circle at 85% 85%,rgba(11,59,60,.06),transparent 45%);pointer-events:none;z-index:0}
-.app{position:relative;z-index:1;min-height:100vh;max-width:1400px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top,0px)) 24px 140px}
+.app{position:relative;z-index:1;min-height:100vh;min-height:100dvh;max-width:1400px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top,0px)) 24px 140px}
 @media(min-width:900px){.app{padding:40px 48px 140px}}
 .update-banner{position:fixed;top:0;left:0;right:0;z-index:9999;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 14px;background:var(--tg-deep);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;transform:translateY(-110%);transition:transform .35s cubic-bezier(.22,1,.36,1);box-shadow:0 4px 20px rgba(0,0,0,.35)}
 .update-banner.show{transform:translateY(0)}
@@ -107,7 +107,7 @@ body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(
 @media (max-width:480px){.alert-banner{flex-wrap:wrap}.alert-banner-text{flex-basis:100%;order:-1;margin-bottom:6px}.alert-banner-btn{font-size:11px;padding:5px 10px}}
 .med-switch-dialog{position:fixed;inset:0;background:rgba(11,59,60,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
 .med-switch-dialog.show{display:flex;animation:fadeIn .2s}
-.med-switch-content{background:var(--tg-sand);border-radius:18px;padding:24px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto}
+.med-switch-content{background:var(--tg-sand);border-radius:18px;padding:24px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;max-height:90dvh;overflow-y:auto}
 @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 .ring-fg{fill:none;stroke:var(--tg-glow);stroke-width:6;stroke-linecap:round;stroke-dasharray:283;transition:stroke 0.4s,stroke-dashoffset 0.6s;filter:drop-shadow(0 0 8px rgba(45,212,191,.5))}
   .ring-fg.ring-warn{stroke:#f59e0b;filter:drop-shadow(0 0 8px rgba(245,158,11,.5))}
@@ -510,6 +510,22 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
   .btn-float svg{width:20px;height:20px}
 }
 
+/* ===== v2.6 · Ajustes mobile (somente layout/CSS) ===== */
+.brand>div:not(.brand-mark){min-width:0}
+@media(max-width:480px){
+  /* Tag do medicamento sai de position:absolute e entra no fluxo do card (evita sobrepor label/anel) */
+  .hero-drug-tag{position:static;display:inline-block;max-width:100%;margin:0 0 12px;font-size:10px}
+  .hero-card{padding-top:18px}
+  /* Barra de abas: fade na borda direita sinaliza que há mais abas ao rolar */
+  .tabbar{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 26px),transparent);padding-right:30px;scroll-padding-right:30px}
+  .tab{font-size:10px}
+  .countdown-ring-inner .lbl{font-size:10px}
+  .stat-label{font-size:11px}
+}
+@media(max-width:360px){
+  .tab{font-size:9.5px}
+  .btn-float{right:14px}
+}
 @media print{
   body{background:white}
   body::before,.tabbar,.btn-float,.topbar,.hello,.report-hero,.icon-btn{display:none!important}
@@ -521,7 +537,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
 .timeline-item.new{animation:tiHighlight 2s ease-out}
 .med-switch-overlay{position:fixed;inset:0;background:rgba(11,59,60,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
 .med-switch-overlay.open{display:flex;animation:msFadeIn .2s}
-.med-switch-box{background:var(--tg-sand);border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto}
+.med-switch-box{background:var(--tg-sand);border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;max-height:90dvh;overflow-y:auto}
 @keyframes msFadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 .field-section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--tg-slate);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid rgba(10,31,33,.08)}
 .sil-active{stroke:var(--tg-accent)!important;opacity:1!important;stroke-width:2.5!important}
@@ -534,6 +550,18 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
 .comp-delta-neg{color:#ef4444;font-size:12px;font-weight:600}
 .comp-delta-neu{color:var(--tg-slate);font-size:12px}
 .comp-card{background:var(--tg-sand);border-radius:12px;padding:14px 16px;border:0.5px solid rgba(10,31,33,.08)}
+.pause-control{border:1px solid rgba(201,169,97,.35);background:linear-gradient(135deg,rgba(201,169,97,.11),rgba(245,241,234,.82))}
+.pause-control-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.pause-status{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;background:rgba(20,160,152,.12);color:var(--tg-core)}
+.pause-status.active{background:rgba(201,169,97,.2);color:#735c24}
+.pause-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pause-note{font-size:13px;line-height:1.5;color:var(--tg-slate)}
+.pause-history{display:grid;gap:8px;margin-top:14px}
+.pause-history-item{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.58);border:1px solid rgba(10,31,33,.06);font-size:12px;line-height:1.45;color:var(--tg-slate)}
+.paused-block{border:1px solid rgba(201,169,97,.42);background:rgba(201,169,97,.1);text-align:center;padding:24px 18px}
+.paused-block h3{font-family:var(--font-display);font-size:22px;color:var(--tg-deep);margin:10px 0 6px}
+.paused-block p{font-size:13px;line-height:1.55;color:var(--tg-slate);max-width:460px;margin:0 auto}
+@media(max-width:520px){.pause-control-head{display:block}.pause-status{margin-top:8px}.pause-actions .btn{width:100%}}
 /* v2.3 — Info tooltip nos cards de métricas derivadas */
 .der-info{position:relative;display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:rgba(10,31,33,.08);color:var(--tg-slate);font-size:9px;font-weight:700;margin-left:5px;cursor:pointer;user-select:none;font-family:Georgia,serif;font-style:italic;vertical-align:middle}
 .der-info:hover{background:var(--tg-accent);color:#fff}
@@ -570,6 +598,23 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
     <div style="display:flex;gap:10px;margin-top:14px">
       <button class="btn btn-primary" style="flex:1" onclick="confirmMedSwitch()">Confirmar troca</button>
       <button class="btn btn-ghost" onclick="closeMedSwitch()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="med-switch-dialog" id="application-pause-dialog">
+  <div class="med-switch-content">
+    <h3 id="pause-dialog-title" style="font-family:var(--font-display);margin-bottom:6px">Pausar aplicações</h3>
+    <p id="pause-dialog-description" class="muted" style="font-size:13px;margin-bottom:14px">A pausa interrompe apenas os lembretes e novos registros do medicamento. Peso, medidas, bioimpedância e diário continuam ativos.</p>
+    <div class="form-grid">
+      <div class="field"><label id="pause-date-label">Início da pausa</label><input type="date" id="pause-date"/></div>
+      <div class="field" id="pause-reason-field"><label>Motivo</label><select id="pause-reason"><option value="orientacao_medica">Orientação médica</option><option value="efeitos_adversos">Efeitos adversos</option><option value="indisponibilidade">Medicamento indisponível</option><option value="procedimento">Procedimento ou exame</option><option value="outro">Outro</option></select></div>
+      <div class="field"><label id="pause-notes-label">Anotação (opcional)</label><textarea id="pause-notes" rows="3" maxlength="500" placeholder="Registre uma orientação ou contexto importante"></textarea></div>
+    </div>
+    <div class="alert alert-warn" style="margin:12px 0 0"><div><strong>Atenção:</strong> o app apenas registra a decisão. Pausar ou retomar o medicamento deve seguir orientação profissional.</div></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn btn-primary" id="pause-dialog-confirm" style="flex:1" onclick="confirmApplicationPauseAction()">Confirmar pausa</button>
+      <button class="btn btn-ghost" onclick="closeApplicationPauseDialog()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -647,7 +692,13 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
 
   <section class="view" id="view-new-app">
     <div class="hello"><div class="hello-label">Registro</div><h2>Nova <em>aplicação</em></h2></div>
-    <div class="card">
+    <div class="card paused-block" id="new-app-paused" style="display:none">
+      <div style="font-size:34px">⏸</div>
+      <h3>Aplicações pausadas</h3>
+      <p id="new-app-paused-text"></p>
+      <button class="btn btn-primary mt-16" onclick="openResumeApplications()">Retomar aplicações</button>
+    </div>
+    <div class="card" id="new-app-form">
       <div class="form-grid">
         <div class="form-grid two">
           <div class="field"><label>Data</label><input type="date" id="app-date"/></div>
@@ -680,6 +731,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px)}
 
   <section class="view" id="view-apps">
     <div class="hello"><div class="hello-label">Histórico</div><h2>Todas as <em>aplicações</em></h2></div>
+    <div class="card pause-control mb-8" id="application-control"></div>
     <div id="all-apps" class="timeline"></div>
   </section>
 
@@ -1344,7 +1396,7 @@ const DRUGS_ORDER = ['saxenda','victoza','ozempic','wegovy','trulicity','mounjar
    • Relatório SOAP multi-fase com comparativo
    Backward compatible: dados de instalações 1.x/2.0 migrados automaticamente.
 */
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.5.0';
 let _justSaved = false;
 
 /* ================== STATE ================== */
@@ -1385,7 +1437,7 @@ function clampSave(obj){
 /* =========================================================
    Hardening Lote B — camada de dados versionada + Store
    ========================================================= */
-var SCHEMA_VERSION = 4;
+var SCHEMA_VERSION = 5;
 var IDB_NAME='glp_monitor', IDB_STORE='state', IDB_KEY='current';
 var _readOnly=false, _persistGranted=null;
 function isReadOnly(){ return _readOnly; }
@@ -1415,9 +1467,11 @@ var MIGRATIONS = {
     }
     return d;
   },
+  // v4 -> v5: registra pausas das aplicações sem alterar os demais acompanhamentos
+  4:(d)=>{ d.applicationPauses=Array.isArray(d.applicationPauses)?d.applicationPauses:[]; return d; },
 };
 
-function defaultState(){ return {_v:SCHEMA_VERSION,cfg:{drugId:'mounjaro',nome:'',dn:'',sexo:'M',indic:'obesidade',peso_inicial:null,inicio:'',medico:'',crm:'',tel:'',email:'',altura_cm:null,alertas:{sonoro:true,visual:true,janela_min:60,snooze_ate:null}},apps:[],pesos:[],medidas:[],quizes:[],medHistory:[]}; }
+function defaultState(){ return {_v:SCHEMA_VERSION,cfg:{drugId:'mounjaro',nome:'',dn:'',sexo:'M',indic:'obesidade',peso_inicial:null,inicio:'',medico:'',crm:'',tel:'',email:'',altura_cm:null,alertas:{sonoro:true,visual:true,janela_min:60,snooze_ate:null}},apps:[],pesos:[],medidas:[],quizes:[],medHistory:[],applicationPauses:[]}; }
 
 /* Aplica migrações de `from` até SCHEMA_VERSION. Nunca destrói: em falha,
    devolve o dado ORIGINAL e ativa modo somente-leitura (PATCH C / Tarefa B2.4). */
@@ -1628,13 +1682,40 @@ async function unlock(pin){
 var state = loadState();
 function persist(){ if(_readOnly){ try{toast('Modo somente-leitura — exporte um backup');}catch(_){} return; } Store.save(state); }
 function drug(){ return DRUGS[state.cfg.drugId] || DRUGS.mounjaro }
+function applicationPausesFor(drugId){ return (state.applicationPauses||[]).filter(p=>p&&p.drugId===drugId&&isValidISODate(p.startDate)); }
+function getActiveApplicationPause(drugId){
+  return [...applicationPausesFor(drugId||state.cfg.drugId)]
+    .filter(p=>!p.endDate).sort((a,b)=>b.startDate.localeCompare(a.startDate))[0]||null;
+}
+function applicationsArePaused(drugId){ return !!getActiveApplicationPause(drugId); }
+function getPendingApplicationResume(drugId){
+  const id=drugId||state.cfg.drugId;
+  const resumed=[...applicationPausesFor(id)].filter(p=>isValidISODate(p.endDate)).sort((a,b)=>(b.endDate+b.startDate).localeCompare(a.endDate+a.startDate))[0];
+  if(!resumed)return null;
+  const hasDoseAfterResume=(state.apps||[]).some(a=>{
+    if(!a||(a.drugId||id)!==id||!isValidISODate(a.date))return false;
+    if(a.date>resumed.endDate)return true;
+    return a.date===resumed.endDate&&a.createdAt&&resumed.resumedAt&&a.createdAt>=resumed.resumedAt;
+  });
+  return hasDoseAfterResume?null:resumed;
+}
+const APPLICATION_PAUSE_REASONS={
+  orientacao_medica:'Orientação médica',efeitos_adversos:'Efeitos adversos',
+  indisponibilidade:'Medicamento indisponível',procedimento:'Procedimento ou exame',outro:'Outro'
+};
+function applicationPauseReason(reason){ return APPLICATION_PAUSE_REASONS[reason]||'Outro'; }
 
 /* ================== UTILS ================== */
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function isValidISODate(value){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return false;
+  const [y,m,d]=value.split('-').map(Number),dt=new Date(Date.UTC(y,m-1,d));
+  return dt.getUTCFullYear()===y&&dt.getUTCMonth()===m-1&&dt.getUTCDate()===d;
+}
 function fmtDate(d){if(!d)return'—';const dt=new Date(d+(d.length<=10?'T12:00:00':''));return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}
 function fmtDateShort(d){const dt=new Date(d+(d.length<=10?'T12:00:00':''));return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}
 function daysBetween(a,b){return Math.floor(Math.abs(new Date(b)-new Date(a))/86400000)}
-function todayISO(){return new Date().toISOString().slice(0,10)}
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function nowHM(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 function idade(dn){if(!dn)return null;const d=new Date(dn),n=new Date();let a=n.getFullYear()-d.getFullYear();const m=n.getMonth()-d.getMonth();if(m<0||(m===0&&n.getDate()<d.getDate()))a--;return a}
 function num(v,dig){if(v==null||isNaN(v))return'—';dig=dig==null?1:dig;return Number(v).toFixed(dig).replace('.',',')}
@@ -1651,6 +1732,10 @@ function showView(name){
   const fab=document.getElementById('btn-float');
   if(fab){
     fab.classList.toggle('hidden', name==='new-app');
+    const fabLabel=fab.querySelector('.btn-float-label');
+    const paused=applicationsArePaused();
+    if(fabLabel)fabLabel.textContent=paused?'Aplicações pausadas':'Nova aplicação';
+    fab.setAttribute('aria-label',paused?'Aplicações pausadas — abrir controle':'Nova aplicação');
     if(name==='dashboard'){
       fab.classList.add('expanded');
       setTimeout(()=>fab.classList.remove('expanded'),1800);
@@ -1754,6 +1839,105 @@ function closeMedSwitch() {
   if (dlg) dlg.classList.remove('show');
 }
 
+/* ================== PAUSA DE APLICAÇÕES v2.5 ================== */
+function startApplicationPause(input){
+  const date=input&&input.date;
+  if(!isValidISODate(date)||date>todayISO()) return {ok:false,error:'Data de início inválida'};
+  if(getActiveApplicationPause(state.cfg.drugId)) return {ok:false,error:'As aplicações já estão pausadas'};
+  const lastApp=[...(state.apps||[])].filter(a=>a&&isValidISODate(a.date)&&(a.drugId||state.cfg.drugId)===state.cfg.drugId).sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')))[0];
+  if(lastApp&&date<lastApp.date) return {ok:false,error:'A pausa não pode começar antes da última aplicação registrada'};
+  state.applicationPauses=state.applicationPauses||[];
+  const pause={
+    id:uid(),drugId:state.cfg.drugId,startDate:date,endDate:null,
+    reason:APPLICATION_PAUSE_REASONS[input.reason]?input.reason:'outro',
+    notes:clampStr(input.notes||'',500),resumeNotes:'',createdAt:new Date().toISOString(),resumedAt:null
+  };
+  state.applicationPauses.push(pause);
+  return {ok:true,pause};
+}
+
+function endApplicationPause(input){
+  const active=getActiveApplicationPause(state.cfg.drugId);
+  if(!active) return {ok:false,error:'Não há pausa ativa'};
+  const date=input&&input.date;
+  if(!isValidISODate(date)||date<active.startDate||date>todayISO()) return {ok:false,error:'Data de retomada inválida'};
+  active.endDate=date;
+  active.resumeNotes=clampStr(input.notes||'',500);
+  active.resumedAt=new Date().toISOString();
+  return {ok:true,pause:active};
+}
+
+function openPauseApplications(){
+  const dlg=document.getElementById('application-pause-dialog');
+  dlg.dataset.mode='pause';
+  document.getElementById('pause-dialog-title').textContent='Pausar aplicações de '+drug().nome;
+  document.getElementById('pause-dialog-description').textContent='A pausa interrompe apenas os lembretes e novos registros do medicamento. Peso, medidas, bioimpedância e diário continuam ativos.';
+  document.getElementById('pause-date-label').textContent='Início da pausa';
+  const date=document.getElementById('pause-date');date.value=todayISO();date.max=todayISO();date.min='';
+  document.getElementById('pause-reason-field').style.display='block';
+  document.getElementById('pause-reason').value='orientacao_medica';
+  document.getElementById('pause-notes-label').textContent='Anotação (opcional)';
+  document.getElementById('pause-notes').value='';
+  document.getElementById('pause-dialog-confirm').textContent='Confirmar pausa';
+  dlg.classList.add('show');
+}
+
+function openResumeApplications(){
+  const active=getActiveApplicationPause(state.cfg.drugId);if(!active){toast('Não há pausa ativa');return}
+  const dlg=document.getElementById('application-pause-dialog');
+  dlg.dataset.mode='resume';
+  document.getElementById('pause-dialog-title').textContent='Retomar aplicações de '+drug().nome;
+  document.getElementById('pause-dialog-description').textContent='A retomada reativa o registro e os alertas a partir da próxima aplicação salva.';
+  document.getElementById('pause-date-label').textContent='Data da retomada';
+  const date=document.getElementById('pause-date');date.value=todayISO();date.max=todayISO();date.min=active.startDate;
+  document.getElementById('pause-reason-field').style.display='none';
+  document.getElementById('pause-notes-label').textContent='Anotação da retomada (opcional)';
+  document.getElementById('pause-notes').value='';
+  document.getElementById('pause-dialog-confirm').textContent='Confirmar retomada';
+  dlg.classList.add('show');
+}
+
+function closeApplicationPauseDialog(){ document.getElementById('application-pause-dialog').classList.remove('show'); }
+
+function confirmApplicationPauseAction(){
+  const dlg=document.getElementById('application-pause-dialog');
+  const input={date:document.getElementById('pause-date').value,reason:document.getElementById('pause-reason').value,notes:document.getElementById('pause-notes').value};
+  const res=dlg.dataset.mode==='resume'?endApplicationPause(input):startApplicationPause(input);
+  if(!res.ok){toast(res.error);return}
+  state.cfg.alertas=state.cfg.alertas||{};state.cfg.alertas.snooze_ate=null;
+  Alerts.lastNotified=null;
+  persist();closeApplicationPauseDialog();Alerts.dismiss();
+  renderDashboard();renderApplicationControl();renderNewAppPauseState();
+  toast(dlg.dataset.mode==='resume'?'Aplicações retomadas':'Aplicações pausadas — acompanhamento mantido');
+}
+
+function renderApplicationControl(){
+  const c=document.getElementById('application-control');if(!c)return;
+  const d=drug(),active=getActiveApplicationPause(state.cfg.drugId),pending=getPendingApplicationResume(state.cfg.drugId);
+  const history=[...applicationPausesFor(state.cfg.drugId)].sort((a,b)=>b.startDate.localeCompare(a.startDate));
+  const historyHTML=history.length?`<div class="pause-history">${history.slice(0,4).map(p=>`<div class="pause-history-item"><strong>${fmtDate(p.startDate)} → ${p.endDate?fmtDate(p.endDate):'em andamento'}</strong> · ${esc(applicationPauseReason(p.reason))}${p.notes?`<br>${esc(p.notes)}`:''}${p.resumeNotes?`<br>Retomada: ${esc(p.resumeNotes)}`:''}</div>`).join('')}</div>`:'';
+  const status=active?'⏸ Aplicações pausadas':pending?'▶ Aplicações retomadas':'● Aplicações em uso';
+  const note=active
+    ?`Pausa desde <strong>${fmtDate(active.startDate)}</strong> por ${esc(applicationPauseReason(active.reason))}. O acompanhamento corporal e o diário continuam normalmente.`
+    :pending
+      ?`Retomada registrada em <strong>${fmtDate(pending.endDate)}</strong>. Os alertas de intervalo recomeçam após a próxima aplicação salva.`
+      :'Use a pausa quando houver interrupção temporária orientada. O histórico de doses permanece preservado e os demais acompanhamentos não são interrompidos.';
+  const primaryAction=active
+    ?'<button class="btn btn-primary" onclick="openResumeApplications()">Retomar aplicações</button>'
+    :pending
+      ?'<button class="btn btn-primary" onclick="showView(\'new-app\')">Registrar próxima aplicação</button><button class="btn btn-ghost" onclick="openPauseApplications()">Pausar novamente</button>'
+      :'<button class="btn btn-ghost" onclick="openPauseApplications()">Pausar aplicações</button>';
+  c.innerHTML=`<div class="pause-control-head"><div><div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--tg-slate)">Controle do medicamento</div><h3 style="font-family:var(--font-display);font-size:20px;color:var(--tg-deep);margin-top:3px">${esc(d.nome)}</h3></div><span class="pause-status ${active?'active':''}">${status}</span></div><div class="pause-note">${note}</div><div class="pause-actions">${primaryAction}<button class="btn btn-ghost" onclick="showView('medidas')">Registrar medidas</button><button class="btn btn-ghost" onclick="showView('quiz')">Abrir diário</button></div>${historyHTML}`;
+}
+
+function renderNewAppPauseState(){
+  const active=getActiveApplicationPause(state.cfg.drugId);
+  const block=document.getElementById('new-app-paused'),form=document.getElementById('new-app-form');
+  if(!block||!form)return;
+  block.style.display=active?'block':'none';form.style.display=active?'none':'block';
+  if(active)document.getElementById('new-app-paused-text').textContent=`Pausa iniciada em ${fmtDate(active.startDate)} (${applicationPauseReason(active.reason)}). Peso, medidas, bioimpedância e diário seguem disponíveis normalmente.`;
+}
+
 /* ================== ALERTA SONORO v2.1 ================== */
 const Alerts = {
   audioCtx: null,
@@ -1839,6 +2023,7 @@ const Alerts = {
 
   check() {
     if (!state.cfg.alertas || (!state.cfg.alertas.sonoro && !state.cfg.alertas.visual)) return;
+    if (applicationsArePaused() || getPendingApplicationResume()) { this.dismiss(); return; }
     if (state.cfg.alertas.snooze_ate && new Date(state.cfg.alertas.snooze_ate) > new Date()) return;
 
     const d = drug();
@@ -1972,6 +2157,8 @@ function renderDashboard(){
   document.getElementById('greeting').innerHTML=`${sal}, <em>${esc(nome)}</em>`;
 
   const d = drug();
+  const activePause=getActiveApplicationPause(state.cfg.drugId);
+  const pendingResume=getPendingApplicationResume(state.cfg.drugId);
   const drugApps = state.apps.filter(a=>(a.drugId||state.cfg.drugId)===state.cfg.drugId);
   const last=[...drugApps].sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time))[0];
   const dose=document.getElementById('hero-dose');
@@ -1984,8 +2171,8 @@ function renderDashboard(){
     dose.innerHTML=`${last.dose}<span class="unit">${d.unidade}</span>`;
     meta.innerHTML=`
       <span class="hero-chip">📅 ${fmtDate(last.date)}</span>
-      <span class="hero-chip">🕐 ${last.time}</span>
-      <span class="hero-chip">📍 ${last.local}</span>
+      <span class="hero-chip">🕐 ${esc(last.time)}</span>
+      <span class="hero-chip">📍 ${esc(last.local)}</span>
       ${last.jejum==='sim'?'<span class="hero-chip">🫗 Em jejum</span>':''}`;
     // ── COUNTDOWN v2: legível e com estados de urgência ──
     const cx = computeCountdown(last, d);
@@ -2012,12 +2199,11 @@ function renderDashboard(){
       : cx.status === 'window' ? 'hero-chip-warn' : 'hero-chip-late';
     meta.innerHTML = `
       <span class="hero-chip">📅 ${fmtDate(last.date)}</span>
-      <span class="hero-chip">🕐 ${last.time}</span>
-      <span class="hero-chip">📍 ${last.local}</span>
+      <span class="hero-chip">🕐 ${esc(last.time)}</span>
+      <span class="hero-chip">📍 ${esc(last.local)}</span>
       ${last.jejum === 'sim' ? '<span class="hero-chip">🫗 Em jejum</span>' : ''}
       <span class="hero-chip ${statusClass}">${cx.status === 'ok' ? '⏳' : cx.status === 'window' ? '⚡' : '⚠️'} ${cx.chipTexto}</span>`;
 
-    updateAlert();
   } else {
     dose.innerHTML = `—<span class="unit">${d.unidade}</span>`;
     meta.innerHTML = `<span class="hero-chip">Nenhuma aplicação de ${d.nome} registrada</span>`;
@@ -2030,6 +2216,23 @@ function renderDashboard(){
     const heroNextDate2 = document.getElementById('hero-next-date');
     if (heroNextDate2) heroNextDate2.style.display = 'none';
   }
+
+  if(activePause){
+    ringNum.textContent='II';ringLbl.textContent='pausa';
+    const ringSub=document.getElementById('ring-sub');if(ringSub)ringSub.textContent='ativa';
+    ringFg.classList.remove('ring-warn','ring-late');ringFg.style.strokeDashoffset=283;
+    const heroNextDate=document.getElementById('hero-next-date');
+    if(heroNextDate){heroNextDate.style.display='block';heroNextDate.textContent='Pausado desde '+fmtDate(activePause.startDate)}
+    meta.innerHTML+=`<span class="hero-chip hero-chip-warn">⏸ Aplicações pausadas</span>`;
+  }else if(pendingResume){
+    ringNum.textContent='▶';ringLbl.textContent='retomada';
+    const ringSub=document.getElementById('ring-sub');if(ringSub)ringSub.textContent='aguarda dose';
+    ringFg.classList.remove('ring-warn','ring-late');ringFg.style.strokeDashoffset=283;
+    const heroNextDate=document.getElementById('hero-next-date');
+    if(heroNextDate){heroNextDate.style.display='block';heroNextDate.textContent='Retomado em '+fmtDate(pendingResume.endDate)}
+    meta.innerHTML+=`<span class="hero-chip hero-chip-ok">▶ Registre a próxima aplicação</span>`;
+  }
+  updateAlert();
 
   const lastPeso=[...state.pesos].sort((a,b)=>a.date.localeCompare(b.date)).slice(-1)[0];
   const prevPeso=[...state.pesos].sort((a,b)=>a.date.localeCompare(b.date)).slice(-2,-1)[0];
@@ -2149,6 +2352,16 @@ function renderDashDerived(){
 
 function updateAlert(){
   const slot=document.getElementById('alert-slot');slot.innerHTML='';
+  const active=getActiveApplicationPause(state.cfg.drugId);
+  if(active){
+    slot.innerHTML=`<div class="alert alert-warn"><div><strong>Aplicações pausadas desde ${fmtDate(active.startDate)}.</strong> Alertas e novos registros do medicamento estão suspensos. Peso, medidas, bioimpedância e diário seguem ativos.${active.notes?' '+esc(active.notes):''}<div style="margin-top:9px"><button class="btn btn-ghost" onclick="openResumeApplications()">Retomar aplicações</button></div></div></div>`;
+    return;
+  }
+  const pending=getPendingApplicationResume(state.cfg.drugId);
+  if(pending){
+    slot.innerHTML=`<div class="alert alert-info"><div><strong>Aplicações retomadas em ${fmtDate(pending.endDate)}.</strong> Registre a próxima dose para reiniciar o calendário e os alertas sem considerar o intervalo da pausa.<div style="margin-top:9px"><button class="btn btn-ghost" onclick="showView('new-app')">Registrar aplicação</button></div></div></div>`;
+    return;
+  }
   const a=analyzeCase();
   if(a.alert){
     const cls=a.alert.level==='warn'?'alert-warn':a.alert.level==='danger'?'alert-danger':a.alert.level==='success'?'alert-success':'alert-info';
@@ -2159,7 +2372,7 @@ function updateAlert(){
 function renderRecentApps(){
   const c=document.getElementById('recent-apps');
   const items=[...state.apps].filter(a=>(a.drugId||state.cfg.drugId)===state.cfg.drugId).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)).slice(0,4);
-  if(!items.length){c.innerHTML=emptyState('Nenhuma aplicação registrada','Toque no botão + para começar');return}
+  if(!items.length){c.innerHTML=emptyState('Nenhuma aplicação registrada',applicationsArePaused()?'Aplicações pausadas; o acompanhamento corporal continua':'Toque no botão + para começar');return}
   c.innerHTML=items.map(timelineApp).join('');
 }
 
@@ -2363,6 +2576,8 @@ function buildDoseChips(){
 }
 
 function prefillNewApp(){
+  renderNewAppPauseState();
+  if(applicationsArePaused())return;
   document.getElementById('app-date').value=todayISO();
   document.getElementById('app-time').value=nowHM();
   buildDoseChips();
@@ -2375,6 +2590,7 @@ document.querySelectorAll('#body-picker .body-btn').forEach(b=>b.addEventListene
 document.querySelectorAll('#fasting-seg button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#fasting-seg button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}));
 
 function saveApp(){
+  if(applicationsArePaused()){toast('Retome as aplicações antes de registrar uma nova dose');renderNewAppPauseState();return}
   const date=document.getElementById('app-date').value;
   const time=document.getElementById('app-time').value;
   const doseChip=document.querySelector('#dose-chips .chip.active');
@@ -2387,7 +2603,7 @@ function saveApp(){
   const doseNum=parseFloat(String(dose).replace(',','.'));
   const doseMax=(drug()&&drug().dose_maxima)?drug().dose_maxima*2:Infinity;
   if(!(doseNum>0)||doseNum>doseMax){toast('Dose fora da faixa plausível');return}
-  state.apps.push({id:uid(),drugId:state.cfg.drugId,date,time,dose,local:clampStr(local,60),jejum,notes});
+  state.apps.push({id:uid(),drugId:state.cfg.drugId,date,time,dose,local:clampStr(local,60),jejum,notes,createdAt:new Date().toISOString()});
   persist();toast('Aplicação registrada ✨');
   document.getElementById('app-notes').value='';
   document.querySelectorAll('#dose-chips .chip, #body-picker .body-btn').forEach(x=>x.classList.remove('active'));
@@ -2397,6 +2613,7 @@ function saveApp(){
 
 /* ================== APPS ================== */
 function renderAllApps(){
+  renderApplicationControl();
   const c=document.getElementById('all-apps');
   const items=[...state.apps].sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
   if(!items.length){c.innerHTML=emptyState('Nenhuma aplicação','Toque em + para adicionar');return}
@@ -2949,6 +3166,8 @@ function buildSOAPHTML(){
   const bios=[...state.medidas].filter(m=>m.bio&&m.bio.magra_kg!=null).sort((x,y)=>x.date.localeCompare(y.date));
   const meds=[...state.medidas].sort((x,y)=>x.date.localeCompare(y.date));
   const quizes=[...state.quizes].sort((x,y)=>x.date.localeCompare(y.date));
+  const pauses=[...applicationPausesFor(state.cfg.drugId)].sort((x,y)=>x.startDate.localeCompare(y.startDate));
+  const activePause=getActiveApplicationPause(state.cfg.drugId);
   const lastApp = apps[apps.length-1];
   const lastPeso = pesos[pesos.length-1];
   const lastMed = meds[meds.length-1];
@@ -2989,6 +3208,7 @@ function buildSOAPHTML(){
   }
 
   const appsRows=apps.slice(-10).reverse().map(x=>`<tr><td class="num">${fmtDate(x.date)}</td><td class="num">${esc(x.time)||'—'}</td><td class="num"><strong>${esc(x.dose)} ${d.unidade}</strong></td><td>${esc(x.local)}</td><td>${x.jejum==='sim'?'Sim':'Não'}</td></tr>`).join('');
+  const pauseRows=pauses.slice().reverse().map(x=>`<tr><td>${fmtDate(x.startDate)}</td><td>${x.endDate?fmtDate(x.endDate):'<strong>Em andamento</strong>'}</td><td>${esc(applicationPauseReason(x.reason))}</td><td>${esc(x.notes)||'—'}</td></tr>`).join('');
   const pesosRows=pesos.slice(-8).reverse().map(x=>`<tr><td class="num">${fmtDate(x.date)}</td><td class="num">${x.valor} kg</td></tr>`).join('');
 
   let queixas='Sem queixas ativas relatadas nesta consulta.';
@@ -3015,6 +3235,7 @@ function buildSOAPHTML(){
         <div><div class="k">Indicação</div><div class="v">${indicMap[p.indic]||'—'}</div></div>
         <div><div class="k">Medicamento</div><div class="v">${d.nome} · ${d.class}</div></div>
         <div><div class="k">Posologia atual</div><div class="v">${lastApp?lastApp.dose+' '+d.unidade+' '+freqLbl:'—'}</div></div>
+        <div><div class="k">Status das aplicações</div><div class="v">${activePause?'Pausadas desde '+fmtDate(activePause.startDate):'Em uso'}</div></div>
         <div><div class="k">Início / Tempo</div><div class="v">${p.inicio?fmtDate(p.inicio):(firstApp?fmtDate(firstApp.date):'—')} · ${semTrat} sem</div></div>
         <div><div class="k">Médico assistente</div><div class="v">${esc(p.medico)||'—'}${p.crm?' · '+esc(p.crm):''}</div></div>
         <div><div class="k">Emissão</div><div class="v">${new Date().toLocaleDateString('pt-BR')}</div></div>
@@ -3037,6 +3258,7 @@ function buildSOAPHTML(){
       <div class="soap-kv mb-16">
         <div class="k">Medicamento</div><div class="v">${d.nome} (${d.generic}) · ${d.class}</div>
         <div class="k">Dose atual</div><div class="v">${lastApp?'<strong>'+lastApp.dose+' '+d.unidade+'</strong> SC '+freqLbl:'—'}</div>
+        <div class="k">Status das aplicações</div><div class="v">${activePause?'<strong>Pausadas</strong> desde '+fmtDate(activePause.startDate)+' · '+esc(applicationPauseReason(activePause.reason)):'Em uso'}</div>
         <div class="k">Escala posológica</div><div class="v">${d.escala.map(v=>String(v).replace('.',',')).join(' → ')} ${d.unidade}</div>
         <div class="k">Peso inicial</div><div class="v">${pIni?pIni+' kg':'—'}</div>
         <div class="k">Peso atual</div><div class="v">${lastPeso?lastPeso.valor+' kg ('+fmtDate(lastPeso.date)+')':'—'}</div>
@@ -3060,6 +3282,7 @@ function buildSOAPHTML(){
       </div>
       <h3>Histórico de aplicações (últimas 10)</h3>
       ${appsRows?`<table class="soap-table"><thead><tr><th>Data</th><th>Hora</th><th>Dose</th><th>Local</th><th>Jejum</th></tr></thead><tbody>${appsRows}</tbody></table>`:'<p class="muted" style="font-size:13px">Sem aplicações registradas para esta caneta.</p>'}
+      ${pauseRows?`<h3 style="margin-top:18px">Pausas das aplicações</h3><table class="soap-table"><thead><tr><th>Início</th><th>Retomada</th><th>Motivo</th><th>Anotação</th></tr></thead><tbody>${pauseRows}</tbody></table>`:''}
       ${multiFase ? `
         <h3 style="margin-top:18px">Linha do tempo de medicamentos</h3>
         <table class="soap-table">
@@ -3116,14 +3339,14 @@ function buildSOAPHTML(){
     <div class="soap-section" data-letter="P">
       <div class="soap-letter">Plano</div>
       <h3>Orientação terapêutica sugerida para apreciação médica</h3>
-      ${a.doseRec?`<div class="plan-box">
+      ${activePause?`<div class="plan-box"><h4>Aplicações pausadas</h4><p style="font-size:13.5px;line-height:1.6">Pausa registrada em ${fmtDate(activePause.startDate)} por ${esc(applicationPauseReason(activePause.reason))}. Manter o acompanhamento de peso, medidas, composição corporal e sintomas; retomar o medicamento somente conforme orientação profissional.</p></div>`:a.doseRec?`<div class="plan-box">
         <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg> Ajuste de dose — sugestão para ${d.nome}</h4>
         <p style="font-size:13.5px;line-height:1.6">${a.doseRec.texto.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}</p>
       </div>`:''}
       <div class="plan-box" style="margin-top:12px">
         <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Conduta geral recomendada</h4>
         <ul>
-          <li>Manter aplicação ${freqLbl} com rodízio de sítios (abdome, coxa, braço) para reduzir reações locais.</li>
+          <li>${activePause?'Durante a pausa, manter registros de peso, medidas, composição corporal e diário clínico.':'Manter aplicação '+freqLbl+' com rodízio de sítios (abdome, coxa, braço) para reduzir reações locais.'}</li>
           <li>Dieta com déficit calórico moderado e <strong>ingestão proteica de 1,2–1,6 g/kg/dia</strong> para preservação de massa magra.</li>
           <li>Treino resistido ≥2×/semana + atividade aeróbica, prevenindo sarcopenia em terapia incretinomimética.</li>
           <li>Hidratação ≥2 L/dia; fracionamento de refeições reduz náusea.</li>
@@ -3157,6 +3380,7 @@ function buildSOAPHTML(){
 /* ================== EXPORT ================== */
 function buildReportText(){
   const a=analyzeCase();const p=state.cfg;const d=drug();
+  const activePause=getActiveApplicationPause(state.cfg.drugId);
   const pesos=[...state.pesos].sort((x,y)=>x.date.localeCompare(y.date));
   const lastPeso=pesos[pesos.length-1];
   const pIni=p.peso_inicial||(pesos[0]&&pesos[0].valor);
@@ -3176,13 +3400,15 @@ function buildReportText(){
   lines.push(`Peso atual: ${lastPeso?lastPeso.valor+' kg':'—'}`);
   lines.push(`Variação: ${pctPeso!=null?pctPeso.toFixed(1)+'%':'—'}`);
   lines.push(`Dose atual: ${lastApp?lastApp.dose+' '+d.unidade:'—'} (${d.freq==='daily'?'diária':d.freq==='monthly'?'mensal':'semanal'})`);
+  lines.push(`Status das aplicações: ${activePause?'Pausadas desde '+fmtDate(activePause.startDate):'Em uso'}`);
   lines.push(`Total aplicações: ${apps.length}`);
   if(a.adesao)lines.push(`Adesão: ${a.adesao.pct}% (${a.adesao.status})`);
   if(a.responder)lines.push(`Resposta: ${a.responder.status}`);
   if(a.plateau)lines.push(`Platô: ${a.plateau.isPlateau?'SIM ('+a.plateau.variacao+'% em '+a.plateau.periodo+'d)':'Não'}`);
   if(a.sarcopenia)lines.push(`Massa magra Δ: ${a.sarcopenia.dMagra} kg (risco ${a.sarcopenia.risco})`);
   lines.push('');
-  if(a.doseRec){lines.push('▸ SUGESTÃO DE CONDUTA');lines.push(a.doseRec.texto.replace(/\*\*/g,''));lines.push('')}
+  if(activePause){lines.push('▸ PAUSA REGISTRADA');lines.push('Manter peso, medidas, composição corporal e diário; retomar o medicamento somente conforme orientação profissional.');lines.push('')}
+  else if(a.doseRec){lines.push('▸ SUGESTÃO DE CONDUTA');lines.push(a.doseRec.texto.replace(/\*\*/g,''));lines.push('')}
   lines.push('PDF completo disponível.');
   lines.push('Sugestões educacionais baseadas em literatura pública. Não substituem decisão médica.');
   return lines.join('\n');
@@ -3201,6 +3427,8 @@ function exportPDF(shareMode){
   const bios=[...state.medidas].filter(m=>m.bio&&m.bio.magra_kg!=null).sort((x,y)=>x.date.localeCompare(y.date));
   const meds=[...state.medidas].sort((x,y)=>x.date.localeCompare(y.date));
   const quizes=[...state.quizes].sort((x,y)=>x.date.localeCompare(y.date));
+  const pauses=[...applicationPausesFor(state.cfg.drugId)].sort((x,y)=>x.startDate.localeCompare(y.startDate));
+  const activePause=getActiveApplicationPause(state.cfg.drugId);
   const lastApp=apps[apps.length-1];
   const lastPeso=pesos[pesos.length-1];
   const lastMed=meds[meds.length-1];
@@ -3306,6 +3534,7 @@ function exportPDF(shareMode){
     ['RCE',(function(){const h=getAlturaEfetiva(lastMed);if(!lastMed||!lastMed.abd||!h)return '—';const r=lastMed.abd/h;return r.toFixed(2)+(r<0.5?' (saudável)':r<0.6?' (risco aumentado)':' (risco elevado)');})()],
     ['% Gordura (Navy)',(function(){const h=getAlturaEfetiva(lastMed);if(!lastMed||!lastMed.pescoco||!lastMed.abd||!h)return '—';if(p.sexo==='F'&&!lastMed.quadril)return '—';let pct;if(p.sexo==='F'){pct=495/(1.29579-0.35004*Math.log10(lastMed.abd+lastMed.quadril-lastMed.pescoco)+0.22100*Math.log10(h))-450;}else{pct=495/(1.0324-0.19077*Math.log10(lastMed.abd-lastMed.pescoco)+0.15456*Math.log10(h))-450;}return isFinite(pct)&&pct>0?pct.toFixed(1)+'%':'—';})()],
     ['Dose atual',lastApp?lastApp.dose+' '+d.unidade+' SC '+freqLbl:'—'],
+    ['Status das aplicações',activePause?'Pausadas desde '+fmtDate(activePause.startDate)+' ('+applicationPauseReason(activePause.reason)+')':'Em uso'],
     ['Total aplicações',apps.length],
     ['Adesão',a.adesao?a.adesao.pct+'% ('+a.adesao.status+')':'dados insuf.'],
   ]);
@@ -3315,6 +3544,10 @@ function exportPDF(shareMode){
     tbl(['Data','Hora','Dose','Local','Jejum'],
       apps.slice(-10).reverse().map(x=>[fmtDate(x.date),x.time||'—',x.dose+' '+d.unidade,x.local,x.jejum==='sim'?'Sim':'Não']),
       [90,50,60,180,60]);
+  }
+  if(pauses.length){
+    h3('Pausas das aplicações');
+    tbl(['Início','Retomada','Motivo'],pauses.slice().reverse().map(x=>[fmtDate(x.startDate),x.endDate?fmtDate(x.endDate):'Em andamento',applicationPauseReason(x.reason)]),[110,110,220]);
   }
   if(pesos.length){
     h3('Evolução ponderal');
@@ -3353,9 +3586,10 @@ function exportPDF(shareMode){
 
   // P
   secTitle('P','Plano');
-  if(a.doseRec){planBox(`Ajuste de dose — ${d.nome}`,[a.doseRec.texto.replace(/\*\*/g,'')])}
+  if(activePause)planBox('Aplicações pausadas',[`Pausa registrada em ${fmtDate(activePause.startDate)} por ${applicationPauseReason(activePause.reason)}. Manter o acompanhamento corporal e de sintomas; retomar somente conforme orientação profissional.`]);
+  else if(a.doseRec){planBox(`Ajuste de dose — ${d.nome}`,[a.doseRec.texto.replace(/\*\*/g,'')])}
   planBox('Conduta geral',[
-    `Manter aplicação ${freqLbl} com rodízio de sítios (abdome, coxa, braço).`,
+    activePause?'Manter registros de peso, medidas, composição corporal e diário clínico durante a pausa.':`Manter aplicação ${freqLbl} com rodízio de sítios (abdome, coxa, braço).`,
     'Dieta com déficit calórico moderado e proteína 1,2–1,6 g/kg/dia.',
     'Treino resistido ≥2×/sem + aeróbico (prevenção de sarcopenia).',
     'Hidratação ≥2 L/dia; fracionar refeições para reduzir náusea.',
@@ -3411,10 +3645,11 @@ function exportPDF(shareMode){
 function exportCSV(){
   const d = drug();
   const apps=Papa.unparse(state.apps.map(a=>({...a,medicamento:DRUGS[a.drugId||d.id]?.nome||'—'})));
+  const pauses=Papa.unparse((state.applicationPauses||[]).map(p=>({...p,medicamento:DRUGS[p.drugId]?.nome||p.drugId,motivo:applicationPauseReason(p.reason)})));
   const pesos=Papa.unparse(state.pesos);
   const med=Papa.unparse(state.medidas.map(m=>({id:m.id,date:m.date,altura:m.altura||state.cfg.altura_cm||null,cintura:m.abd,abdomen_alto:m.abdomen,pescoco:m.pescoco,quadril:m.quadril,peito:m.peito,braco_d:m.braco,braco_e:m.bracoE,coxa_d:m.coxa,coxa_e:m.coxaE,panturrilha_d:m.panturrilha,panturrilha_e:m.panturrilhaE,gord_pct:m.bio?.gord_pct,gord_kg:m.bio?.gord_kg,magra_kg:m.bio?.magra_kg,musc_kg:m.bio?.musc_kg,agua_pct:m.bio?.agua_pct,visc:m.bio?.visc,tmb:m.bio?.tmb,idade_met:m.bio?.idade_met})));
   const qz=Papa.unparse(state.quizes);
-  const blob=new Blob(['APLICACOES\n'+apps+'\n\nPESO\n'+pesos+'\n\nMEDIDAS+BIOIMPEDANCIA\n'+med+'\n\nDIARIO\n'+qz],{type:'text/csv;charset=utf-8'});
+  const blob=new Blob(['APLICACOES\n'+apps+'\n\nPAUSAS_DAS_APLICACOES\n'+pauses+'\n\nPESO\n'+pesos+'\n\nMEDIDAS+BIOIMPEDANCIA\n'+med+'\n\nDIARIO\n'+qz],{type:'text/csv;charset=utf-8'});
   downloadBlob(blob,'glp-monitor.csv');toast('CSV exportado');
 }
 function exportJSON(){
@@ -3729,6 +3964,7 @@ function openImportPreview(result,filename){
   const ps=document.getElementById('import-preview-stats');
   const items=[
     {k:'Aplicações encontradas',v:data.apps?.length||0},
+    {k:'Pausas de aplicações',v:data.applicationPauses?.length||0},
     {k:'Registros de peso',v:data.pesos?.length||0},
     {k:'Medidas corporais',v:data.medidas?.length||0},
     {k:'Entradas do diário',v:data.quizes?.length||0},
@@ -3738,7 +3974,7 @@ function openImportPreview(result,filename){
   ps.innerHTML=items.map(i=>`<div class="import-stat-row"><div class="k">${i.k}</div><div class="v">${i.v}</div></div>`).join('');
   const warn=document.getElementById('import-merge-warning');
   const warnTxt=document.getElementById('import-merge-warning-text');
-  const totalCurrent=state.apps.length+state.pesos.length+state.medidas.length+state.quizes.length;
+  const totalCurrent=state.apps.length+state.pesos.length+state.medidas.length+state.quizes.length+(state.applicationPauses||[]).length;
   if(totalCurrent>0){
     warn.style.display='flex';
     warnTxt.innerHTML='Você tem <strong>'+totalCurrent+' registros</strong> atualmente. <strong>Mesclar</strong> combina sem duplicar IDs. <strong>Substituir</strong> apaga seus dados atuais.';
@@ -3761,14 +3997,17 @@ function applyImport(mode){
   if(!_importData){closeImportModal();return}
   const {data,version}=_importData;
   if(mode==='replace'){
-    state=data;
+    state=migrate(data,(typeof data._v==='number')?data._v:3);
   }else{
     const mergeArr=(a,b)=>{const ids=new Set(a.map(x=>x.id));return [...a,...b.filter(x=>!ids.has(x.id))]};
     state.apps=mergeArr(state.apps,data.apps||[]);
     state.pesos=mergeArr(state.pesos,data.pesos||[]);
     state.medidas=mergeArr(state.medidas,data.medidas||[]);
     state.quizes=mergeArr(state.quizes,data.quizes||[]);
+    state.medHistory=mergeArr(state.medHistory||[],data.medHistory||[]);
+    state.applicationPauses=mergeArr(state.applicationPauses||[],data.applicationPauses||[]);
     if(!state.cfg.nome&&data.cfg?.nome)state.cfg={...state.cfg,...data.cfg};
+    state._v=SCHEMA_VERSION;
   }
   persist();
   closeImportModal();
@@ -3781,13 +4020,14 @@ function applyImport(mode){
 // ---- Limpar dados ----
 function confirmClearData(){
   const sum=document.getElementById('clear-data-summary');
-  const total=state.apps.length+state.pesos.length+state.medidas.length+state.quizes.length;
+  const total=state.apps.length+state.pesos.length+state.medidas.length+state.quizes.length+(state.applicationPauses||[]).length;
   if(total===0){toast('Não há dados para apagar');return}
   sum.innerHTML=[
     {icon:'💉',label:'Aplicações',n:state.apps.length},
     {icon:'⚖️',label:'Registros de peso',n:state.pesos.length},
     {icon:'📏',label:'Medidas corporais',n:state.medidas.length},
     {icon:'📋',label:'Entradas do diário',n:state.quizes.length},
+    {icon:'⏸',label:'Pausas de aplicações',n:(state.applicationPauses||[]).length},
   ].map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(10,31,33,.06);font-size:14px">
     <span style="color:var(--tg-slate)">${r.icon} ${r.label}</span>
     <strong style="color:${r.n>0?'var(--tg-rose)':'var(--tg-mist)'}">${r.n} registro${r.n!==1?'s':''}</strong>
@@ -3798,7 +4038,8 @@ function confirmClearData(){
 }
 
 function executeClearData(){
-  state={cfg:{drugId:state.cfg.drugId||'mounjaro',nome:'',dn:'',sexo:'M',indic:'obesidade',peso_inicial:null,inicio:'',medico:'',crm:'',tel:'',email:'',altura_cm:state.cfg.altura_cm||null},apps:[],pesos:[],medidas:[],quizes:[],medHistory:[]};
+  const currentDrug=state.cfg.drugId||'mounjaro',currentHeight=state.cfg.altura_cm||null;
+  state=defaultState();state.cfg.drugId=currentDrug;state.cfg.altura_cm=currentHeight;
   persist();
   closeClearModal();
   toast('Todos os dados foram apagados');

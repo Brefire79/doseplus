@@ -8,7 +8,7 @@
  *
  * Cobertura por lote:
  *   LOTE A → esc() vs XSS, validação de ranges                 [ATIVO]
- *   LOTE B → migrações 1→4, rollback da escrita dupla          [ATIVO]
+ *   LOTE B → migrações 1→5, rollback da escrita dupla          [ATIVO]
  *   LOTE C → checksum export/import, regressão analyzeCase()   [SCAFFOLD]
  * ============================================================= */
 
@@ -72,6 +72,7 @@ function makeNode() {
 }
 function buildSandbox() {
   const storage = new Map();
+  const nodes = new Map();
   let failNextSet = false;
   const localStorageStub = {
     getItem: (k) => (storage.has(k) ? storage.get(k) : null),
@@ -81,7 +82,7 @@ function buildSandbox() {
     key: (i) => Array.from(storage.keys())[i] ?? null,
     get length() { return storage.size; },
   };
-  const documentStub = { getElementById: () => makeNode(), querySelector: () => makeNode(), querySelectorAll: () => [], createElement: () => makeNode(), addEventListener: () => {}, body: makeNode(), documentElement: makeNode() };
+  const documentStub = { getElementById: (id) => { if(!nodes.has(id)) nodes.set(id, makeNode()); return nodes.get(id); }, querySelector: () => makeNode(), querySelectorAll: () => [], createElement: () => makeNode(), addEventListener: () => {}, body: makeNode(), documentElement: makeNode() };
   const sandbox = {
     console, document: documentStub, localStorage: localStorageStub,
     navigator: { userAgent: 'node', storage: { persist: async () => false, persisted: async () => false }, share: undefined },
@@ -144,31 +145,31 @@ async function main() {
   } else todo('clampSave — Lote A');
 
   /* ---------------- LOTE B ---------------- */
-  section('LOTE B · migrações 1→4 (sem perda de dados)');
+  section('LOTE B · migrações 1→5 (sem perda de dados)');
   if (app.MIGRATIONS && typeof app.SCHEMA_VERSION === 'number' && typeof app.migrate === 'function') {
-    await test('SCHEMA_VERSION === 4', () => eq(app.SCHEMA_VERSION, 4));
+    await test('SCHEMA_VERSION === 5', () => eq(app.SCHEMA_VERSION, 5));
 
     // Fixtures reais de cada versão legada
     const fx1 = { cfg: { nome: 'Ana' }, apps: [{ date: '2024-01-01', time: '08:00', dose: '5', local: 'abdomen' }], pesos: [{ date: '2024-01-01', valor: 90 }] };
     const fx2 = { cfg: { nome: 'Bia', sexo: 'F' }, apps: [{ date: '2024-03-01', time: '09:00', dose: '2.5', local: 'coxa' }], pesos: [{ date: '2024-03-01', valor: 78 }] };
     const fx3 = { cfg: { nome: 'Cid', drugId: 'ozempic' }, apps: [{ drugId: 'ozempic', date: '2024-05-01', time: '07:00', dose: '1', local: 'abdomen' }], pesos: [{ date: '2024-05-01', valor: 102 }], medidas: [{ date: '2024-05-01', altura: 170 }], quizes: [] };
 
-    await test('v1→v4: estampa _v, drugId, sexo default; preserva nome/apps/pesos', () => {
+    await test('v1→v5: estampa _v, drugId, sexo default; preserva nome/apps/pesos', () => {
       const r = app.migrate(JSON.parse(JSON.stringify(fx1)), 1);
-      eq(r._v, 4); eq(r.cfg.nome, 'Ana'); eq(r.cfg.drugId, 'mounjaro'); eq(r.cfg.sexo, 'M');
+      eq(r._v, 5); eq(r.cfg.nome, 'Ana'); eq(r.cfg.drugId, 'mounjaro'); eq(r.cfg.sexo, 'M');
       eq(r.apps.length, 1); eq(r.apps[0].drugId, 'mounjaro'); eq(r.pesos[0].valor, 90);
-      ok(Array.isArray(r.medidas) && Array.isArray(r.quizes) && Array.isArray(r.medHistory));
+      ok(Array.isArray(r.medidas) && Array.isArray(r.quizes) && Array.isArray(r.medHistory) && Array.isArray(r.applicationPauses));
     });
-    await test('v2→v4: preserva sexo=F, adiciona drugId; sem perda', () => {
+    await test('v2→v5: preserva sexo=F, adiciona drugId; sem perda', () => {
       const r = app.migrate(JSON.parse(JSON.stringify(fx2)), 2);
-      eq(r._v, 4); eq(r.cfg.sexo, 'F'); eq(r.cfg.drugId, 'mounjaro'); eq(r.apps[0].drugId, 'mounjaro'); eq(r.pesos[0].valor, 78);
+      eq(r._v, 5); eq(r.cfg.sexo, 'F'); eq(r.cfg.drugId, 'mounjaro'); eq(r.apps[0].drugId, 'mounjaro'); eq(r.pesos[0].valor, 78);
     });
-    await test('v3→v4: preserva drugId=ozempic, auto-altura, alertas; sem perda', () => {
+    await test('v3→v5: preserva drugId=ozempic, auto-altura, alertas; sem perda', () => {
       const r = app.migrate(JSON.parse(JSON.stringify(fx3)), 3);
-      eq(r._v, 4); eq(r.cfg.drugId, 'ozempic'); eq(r.cfg.altura_cm, 170);
+      eq(r._v, 5); eq(r.cfg.drugId, 'ozempic'); eq(r.cfg.altura_cm, 170);
       ok(r.cfg.alertas && r.cfg.alertas.janela_min === 60); eq(r.apps[0].drugId, 'ozempic'); eq(r.pesos[0].valor, 102);
     });
-    await test('migração é idempotente (v4→v4 estável)', () => {
+    await test('migração é idempotente (v5→v5 estável)', () => {
       const once = app.migrate(JSON.parse(JSON.stringify(fx3)), 3);
       const twice = app.migrate(JSON.parse(JSON.stringify(once)), once._v);
       eq(JSON.stringify(once), JSON.stringify(twice));
@@ -178,37 +179,78 @@ async function main() {
     });
   } else todo('LOTE B — expor MIGRATIONS/SCHEMA_VERSION/migrate');
 
+  section('v2.5 · pausa exclusiva das aplicações');
+  if (typeof app.startApplicationPause === 'function' && typeof app.endApplicationPause === 'function') {
+    await test('pausa preserva aplicações e acompanhamento corporal', () => {
+      app.state = app.defaultState();
+      app.state.apps.push({ id: 'a1', drugId: 'mounjaro', date: '2026-01-01', time: '08:00', dose: '5', local: 'abdomen' });
+      app.state.pesos.push({ id: 'p1', date: '2026-01-01', valor: 90 });
+      app.state.medidas.push({ id: 'm1', date: '2026-01-01', abd: 100 });
+      const r = app.startApplicationPause({ date: app.todayISO(), reason: 'orientacao_medica', notes: 'Pausa temporária' });
+      ok(r.ok); ok(app.applicationsArePaused('mounjaro')); eq(app.state.apps.length, 1); eq(app.state.pesos.length, 1); eq(app.state.medidas.length, 1);
+    });
+    await test('pausa é isolada por medicamento', () => {
+      ok(app.applicationsArePaused('mounjaro')); ok(!app.applicationsArePaused('ozempic'));
+    });
+    await test('retomada encerra a pausa sem apagar histórico', () => {
+      const r = app.endApplicationPause({ date: app.todayISO(), notes: 'Retomada orientada' });
+      ok(r.ok); ok(!app.applicationsArePaused('mounjaro')); eq(app.state.applicationPauses.length, 1); eq(app.state.applicationPauses[0].resumeNotes, 'Retomada orientada');
+    });
+    await test('alertas aguardam a primeira aplicação após a retomada', () => {
+      ok(!!app.getPendingApplicationResume('mounjaro'));
+      app.state.apps.push({ id: 'a2', drugId: 'mounjaro', date: app.todayISO(), time: '12:00', dose: '5', local: 'coxa', createdAt: new Date(Date.now() + 1).toISOString() });
+      ok(!app.getPendingApplicationResume('mounjaro'));
+    });
+    await test('data futura de pausa é rejeitada', () => {
+      const future = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+      const r = app.startApplicationPause({ date: future, reason: 'outro' }); ok(!r.ok);
+    });
+    await test('data malformada e pausa anterior à última aplicação são rejeitadas', () => {
+      let r = app.startApplicationPause({ date: '2026-02-30', reason: 'outro' }); ok(!r.ok);
+      const yesterday = new Date(app.todayISO() + 'T12:00:00'); yesterday.setDate(yesterday.getDate() - 1);
+      r = app.startApplicationPause({ date: yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0'), reason: 'outro' }); ok(!r.ok);
+    });
+    await test('anotação da pausa é escapada antes de entrar no HTML', () => {
+      app.state = app.defaultState();
+      const payload = '<img src=x onerror=alert(1)>';
+      const r = app.startApplicationPause({ date: app.todayISO(), reason: 'outro', notes: payload }); ok(r.ok);
+      app.renderApplicationControl();
+      const html = app.document.getElementById('application-control').innerHTML;
+      ok(!html.includes(payload)); ok(html.includes('&lt;img'));
+    });
+  } else todo('v2.5 — funções de pausa/retomada');
+
   section('LOTE B · PATCH D — rollback da escrita dupla');
   if (app.Store && typeof app.Store.save === 'function') {
     // round-trip IndexedDB (fonte da verdade)
     await test('Store.save grava e Store.load recupera via IndexedDB', async () => {
-      const st = { _v: 4, cfg: { nome: 'Dora', drugId: 'mounjaro' }, apps: [], pesos: [{ date: '2024-06-01', valor: 70 }], medidas: [], quizes: [], medHistory: [] };
+      const st = { _v: 5, cfg: { nome: 'Dora', drugId: 'mounjaro' }, apps: [], pesos: [{ date: '2024-06-01', valor: 70 }], medidas: [], quizes: [], medHistory: [], applicationPauses: [] };
       app.state = st; app.Store.save(st); await delay(30);
       const back = await app.Store.load();
-      eq(back.cfg.nome, 'Dora'); eq(back.pesos[0].valor, 70); eq(back._v, 4);
+      eq(back.cfg.nome, 'Dora'); eq(back.pesos[0].valor, 70); eq(back._v, 5);
     });
     // falha parcial: localStorage falha, IndexedDB ok → integridade preservada
     await test('localStorage falha no save → IndexedDB mantém estado íntegro', async () => {
-      const prev = { _v: 4, cfg: { nome: 'Eva', drugId: 'mounjaro' }, apps: [], pesos: [], medidas: [], quizes: [], medHistory: [] };
+      const prev = { _v: 5, cfg: { nome: 'Eva', drugId: 'mounjaro' }, apps: [], pesos: [], medidas: [], quizes: [], medHistory: [], applicationPauses: [] };
       app.state = prev; app.Store.save(prev); await delay(30);
-      const next = { _v: 4, cfg: { nome: 'Eva2', drugId: 'mounjaro' }, apps: [], pesos: [], medidas: [], quizes: [], medHistory: [] };
+      const next = { _v: 5, cfg: { nome: 'Eva2', drugId: 'mounjaro' }, apps: [], pesos: [], medidas: [], quizes: [], medHistory: [], applicationPauses: [] };
       app.__failNextLocalStorageSet();
       let threw = false; try { app.Store.save(next); } catch (e) { threw = true; }
       await delay(30);
       ok(!threw, 'Store.save não deve propagar exception');
       const back = await app.Store.load(); // IndexedDB primário
       ok(back.cfg.nome === 'Eva2' || back.cfg.nome === 'Eva', 'estado íntegro, nunca híbrido');
-      eq(back._v, 4);
+      eq(back._v, 5);
     });
   } else todo('LOTE B — expor Store.save/load');
 
   /* ---------------- LOTE C ---------------- */
   section('LOTE C · integridade de export/import (envelope + checksum)');
   if (typeof app.buildExportEnvelope === 'function' && typeof app.parseImportEnvelope === 'function') {
-    const sample = { _v: 4, cfg: { nome: 'Fá', drugId: 'mounjaro' }, apps: [{ date: '2024-01-01', dose: '10' }], pesos: [{ date: '2024-01-01', valor: 90 }], medidas: [], quizes: [], medHistory: [] };
+    const sample = { _v: 5, cfg: { nome: 'Fá', drugId: 'mounjaro' }, apps: [{ date: '2024-01-01', dose: '10' }], pesos: [{ date: '2024-01-01', valor: 90 }], medidas: [], quizes: [], medHistory: [], applicationPauses: [] };
     await test('envelope tem app/schema/checksum/data', async () => {
       const env = await app.buildExportEnvelope(sample);
-      eq(env.app, 'dosecheck-plus'); eq(env.schema, 4); ok(typeof env.checksum === 'string' && env.checksum.length === 64); ok(!!env.data);
+      eq(env.app, 'dosecheck-plus'); eq(env.schema, 5); ok(typeof env.checksum === 'string' && env.checksum.length === 64); ok(!!env.data);
     });
     await test('roundtrip export→import preserva dados', async () => {
       const env = await app.buildExportEnvelope(sample);
@@ -239,7 +281,7 @@ async function main() {
     await test('27 semanas em 10mg com platô recomenda escalada para 12.5mg', () => {
       const iso = (daysAgo) => new Date(Date.now() - daysAgo * 86400000).toISOString().slice(0, 10);
       app.state = {
-        _v: 4,
+        _v: 5,
         cfg: { drugId: 'mounjaro', nome: 'Reg', sexo: 'M', indic: 'obesidade', peso_inicial: 100, inicio: iso(189), altura_cm: 170, alertas: {} },
         apps: [
           { drugId: 'mounjaro', date: iso(120), time: '08:00', dose: '7.5', local: 'abdomen' },
@@ -251,7 +293,7 @@ async function main() {
           { date: iso(189), valor: 100 }, { date: iso(120), valor: 92 },
           { date: iso(60), valor: 88 }, { date: iso(30), valor: 87.5 }, { date: iso(1), valor: 87.4 },
         ],
-        medidas: [], quizes: [], medHistory: [],
+        medidas: [], quizes: [], medHistory: [], applicationPauses: [],
       };
       const r = app.analyzeCase();
       ok(r.plateau && r.plateau.isPlateau, 'platô deveria ser detectado');

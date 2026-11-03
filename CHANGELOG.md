@@ -2,6 +2,42 @@
 
 Formato: épico de hardening executado em lotes (ver [PRD](PRD_HARDENING_DOSECHECK_PLUS_V2.md) e [prompt](PROMPT-glp-monitor-hardening-v2.md)).
 
+## [2.6.0] — 2026-11-02 — Otimização mobile (somente layout)
+
+- Card "Última aplicação": a tag do medicamento deixou de ser `position:absolute` no mobile e entra no fluxo, sem sobrepor o rótulo nem o anel de dias (360px/320px).
+- Cabeçalho: o bloco de texto da marca aceita encolher (`min-width:0`), evitando que o seletor de medicamento cubra o subtítulo em 320px.
+- Barra de abas: fade na borda direita + padding para sinalizar que há mais abas ao rolar (Canetas/Backup ficavam cortadas sem indicação).
+- `100vh`/`90vh` ganharam fallback `100dvh`/`90dvh` (barra do navegador mobile).
+- Fontes mínimas: abas 10px, rótulos de estatística 11px, anel 10px.
+- Manifest: ícone `maskable` dedicado (`icon-maskable-512.png`, com margem de segurança), separado dos ícones `any`.
+- Cache do Service Worker `dosecheck-v2.5` → `dosecheck-v2.6`.
+- Sem alteração em `analyzeCase()`, `DRUGS`, schema ou dados salvos.
+
+## [2.5.0] — 2026-07-20 — Pausa e retomada de aplicações
+
+### Controle de aplicações
+- Nova ação para **pausar apenas as aplicações** do medicamento atual, preservando peso, medidas, bioimpedância, diário e todo o histórico anterior.
+- Pausa registra data, motivo e anotação opcional; retomada registra data e anotação separada.
+- Controle isolado por medicamento, com histórico visível na tela de doses e incluído nos relatórios, backup JSON e exportação CSV.
+- A prévia de importação e a limpeza de dados contabilizam também o histórico de pausas.
+- Durante a pausa, novos registros e alertas da aplicação ficam suspensos; os demais acompanhamentos continuam disponíveis.
+- Após a retomada, o calendário aguarda a **primeira nova aplicação** antes de reativar alertas, evitando marcar como atrasado o intervalo em que o tratamento esteve pausado.
+
+### Compatibilidade, segurança e validação
+- Schema `4 → 5` com migração aditiva de `applicationPauses`, sem alterar aplicações ou dados clínicos existentes.
+- Datas inválidas/futuras são rejeitadas; uma pausa retroativa não pode anteceder a última aplicação já registrada.
+- Datas padrão passam a usar o calendário local do aparelho, evitando avançar um dia no período noturno por conversão UTC.
+- Novas aplicações recebem `createdAt` para distinguir corretamente uma dose pós-retomada de outra dose antiga registrada na mesma data.
+- Campos livres da pausa limitados a 500 caracteres e escapados antes de entrar em HTML.
+- Cache do Service Worker atualizado de `dosecheck-v2.4` para `dosecheck-v2.5` para distribuir a nova interface offline.
+- Deploy manual da Netlify recebe `_headers` no diretório público e `no-cache` em `/`, `index.html` e `sw.js`, reduzindo o risco de a PWA continuar servindo a versão anterior.
+
+### Testes
+- Cobertura de migração 1→5, isolamento por medicamento, preservação dos acompanhamentos, retomada, datas inválidas e espera da primeira dose pós-retomada.
+
+### Trade-off clínico
+- `analyzeCase()` e suas regras revisadas não foram alterados. Depois da primeira dose pós-retomada, um intervalo longo causado pela pausa ainda pode aparecer na métrica histórica de adesão; excluir esse período exige validação clínica específica antes de mudar o motor.
+
 ## [Hardening · Lote C] — 2026-06-15 — Cripto + Share + Export + SW
 
 ### Criptografia opcional em repouso (Tarefa C1 · LGPD art. 11)

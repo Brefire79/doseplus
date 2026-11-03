@@ -8,3 +8,9 @@ node_modules/
 Thumbs.db
 .DS_Store
 *.log
+
+# Local Netlify folder
+.netlify
+
+# Manual deploy artifacts
+*-netlify.zip

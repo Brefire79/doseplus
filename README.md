@@ -71,13 +71,16 @@ Todas as sugestões são **educacionais**. O PDF traz disclaimer em todas as pá
 
 ## Deploy rápido
 
-**Netlify drag & drop:** arraste a pasta `glp-monitor-pwa/` em https://app.netlify.com/drop.
+**Netlify manual (site existente):** abra o site no painel da Netlify, entre em **Deploys** e arraste `DoseCheck-Plus-v2.5.0-netlify.zip` para a área de deploy manual. O ZIP deve ter `index.html` diretamente na raiz.
 
-**CLI:** `netlify deploy --prod --dir=glp-monitor-pwa`
+**Netlify Drop (site novo):** arraste o mesmo ZIP em https://app.netlify.com/drop.
 
-**Local:** `npx serve glp-monitor-pwa` ou `python3 -m http.server -d glp-monitor-pwa 8080`
+**CLI opcional:** `netlify deploy --prod --dir=.`
+
+**Local:** `npx serve .` ou `python -m http.server 8080`
 
 > Service Worker só registra em HTTPS ou `localhost`. Via `file://` o app funciona via localStorage mas sem cache SW.
+> O arquivo `_headers` acompanha o deploy manual para impedir cache antigo do `index.html` e do Service Worker.
 
 ---
 
