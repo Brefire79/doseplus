@@ -1,5 +1,7 @@
 # PROMPT — DoseCheck Plus v2 (GLP Monitor): Hardening de Segurança + Camada de Dados
 
+> **Status: ✅ executado** (Lotes A, B e C, 15/06/2026). Mantido como registro histórico — os caminhos, versões de schema (4) e de cache (`v2.3`/`v2.4`) citados abaixo são da época. Estado atual: AGENTS.md e CHANGELOG.md.
+
 > **Execução fatiada em 3 lotes.** Cada lote é um turno independente do Opus 4.8.
 > Em **cada** execução, cole: o bloco **CONTEXTO COMPARTILHADO** (logo abaixo) + **um lote** (A, B ou C).
 > Ordem obrigatória: **A → B → C** (B depende de A; C depende de B).

@@ -4,7 +4,17 @@
 **Empresa:** Vianexx
 **Product Owner (responsável):** Breno (Vianexx)
 **Data:** 30/05/2026
-**Status:** Draft para execução
+**Status:** Em execução — atualizado em 03/11/2026 (app na v2.6.1, no ar em doseplus.netlify.app)
+
+> **Andamento (03/11/2026)** — o texto abaixo é o PRD original de 30/05/2026; esta nota registra o que já foi entregue.
+>
+> - ✅ Persistência em IndexedDB com migração segura (Fase 1.1; riscos 2.2.1 parcialmente resolvidos — sync entre aparelhos continua fora).
+> - ✅ Suíte mínima de testes automatizados: `node test.js` (Fase 1.2; risco 2.2.5).
+> - ✅ Hardening do Service Worker e estratégia de atualização: aviso de nova versão, versão visível, "Forçar atualização", navegação network-first (Fase 1.4).
+> - ✅ Criptografia opcional por PIN, backup com checksum, compartilhamento sem dados na URL (risco 2.2.4).
+> - ✅ Rotina de versionamento e release definida (README → Deploy; AGENTS.md → Ao entregar mudanças).
+> - ✅ Pausa/retomada de aplicações (v2.5.0) e otimização mobile (v2.6.0).
+> - ⏳ Pendentes: branding Vianexx e textos institucionais, termo de uso e política de privacidade publicados, baseline de métricas, checklist de QA manual, plano de rollback documentado, separação em módulos (Fase 1.3 — conflita com o modelo single-file; exige decisão), Fase 2 inteira.
 
 ---
 

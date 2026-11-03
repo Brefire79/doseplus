@@ -1,5 +1,7 @@
 # PROMPT — doseplus v2.6.1 · versão visível, atualização forçada e assets do navegador
 
+> **Status: ✅ executado** e publicado em doseplus.netlify.app em 03/11/2026 (commit `53968e1`). Extra além deste prompt: círculo vermelho de marcador no símbolo do cabeçalho. Mantido como registro.
+
 Pasta do projeto (trabalhe SOMENTE nela): `/Users/brenoluis/Documents/Projetos APPs/doseplus`
 Não toque em nenhum outro projeto. Leia antes: `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`.
 

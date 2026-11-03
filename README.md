@@ -1,8 +1,12 @@
-# GLP Monitor · Emagrecedores PWA
+# DOSE Plus · GLP Monitor (DoseCheck Plus v2)
+
+**No ar:** https://doseplus.netlify.app · **Repositório:** `Brefire79/doseplus`
+
+> Nomes usados: **DOSE Plus** (marca na tela e no ícone), **GLP Monitor · Emagrecedores** (título da página e nome no `manifest.json`), **DoseCheck Plus v2** (nome do projeto nos documentos), **doseplus** (site, repositório e pasta).
 
 Acompanhamento clínico completo para tratamento com **agonistas GLP-1 / GIP**. Suporte multi-medicamento — o app se adapta à caneta em uso (Ozempic, Wegovy, Mounjaro, Saxenda, Trulicity, Retatrutida etc.), com escala de doses, intervalo, orientações e análise específicas por droga.
 
-**Stack:** Vanilla JS + localStorage + Chart.js + jsPDF + PapaParse · single-file HTML · 100% offline-first.
+**Stack:** Vanilla JS em um único `index.html` · IndexedDB (fonte da verdade) + espelho em `localStorage` · Chart.js 4.4.1, jsPDF 2.5.1 e PapaParse 5.4.1 via CDN com SRI · Service Worker offline-first · sem backend, sem build.
 
 **Versão atual:** 2.6.1 (visível no rodapé do Painel e em Preferências → Atualização de app).
 
@@ -52,7 +56,11 @@ Acompanhamento clínico completo para tratamento com **agonistas GLP-1 / GIP**. 
   - Intensidade de efeitos adversos (30d)
   - Sugestão de ajuste de dose adaptada à escala da droga
 - **Relatório SOAP:** Subjetivo / Objetivo / Avaliação / Plano, formatado padrão médico, com cabeçalho institucional, tabelas de dados, referências bibliográficas específicas da caneta, assinaturas e aviso legal.
-- **Export:** PDF profissional (cabeçalho teal + banda dourada, paginação, rodapé legal), CSV multi-sessão, JSON de backup, impressão, WhatsApp, e-mail.
+- **Pausa e retomada de aplicações** (v2.5): pausa só as doses do medicamento atual, com data, motivo e anotação; peso, medidas e diário continuam. Alertas ficam suspensos e voltam após a primeira dose pós-retomada.
+- **Proteção por PIN (opcional):** dados cifrados no aparelho (PBKDF2 310 mil iterações → AES-GCM 256). Não há recuperação de PIN.
+- **Backup com integridade:** JSON exportado com envelope e checksum SHA-256; a importação valida antes de sobrescrever qualquer coisa e mostra uma prévia (mesclar ou substituir).
+- **Atualização do app** (v2.6.1): versão visível no rodapé do Painel e em Preferências; botões "Verificar" e "Forçar atualização" (limpa só o cache do app, nunca os dados).
+- **Export:** PDF profissional (cabeçalho teal + banda dourada, paginação, rodapé legal), CSV multi-sessão, JSON de backup, impressão. WhatsApp/e-mail enviam só uma mensagem-resumo (nenhum dado clínico na URL); o PDF é compartilhado como anexo pela Web Share API quando o aparelho suporta.
 
 ---
 
@@ -71,28 +79,55 @@ Todas as sugestões são **educacionais**. O PDF traz disclaimer em todas as pá
 
 ---
 
-## Deploy rápido
+## Deploy
 
-**Netlify manual (site existente):** abra o site no painel da Netlify, entre em **Deploys** e arraste `doseplus-v2.6.1-netlify.zip` para a área de deploy manual. O ZIP deve ter `index.html` diretamente na raiz.
+Site de produção: **doseplus.netlify.app** — conta Netlify `casatvboxbrefire@gmail.com`, projeto `doseplus` (Project ID `0a3b89a9-4e0b-4d59-8b6c-4c4dcd3e8a19`, já vinculado em `.netlify/state.json`).
 
-**Netlify Drop (site novo):** arraste o mesmo ZIP em https://app.netlify.com/drop.
+O deploy publica **só os arquivos do app**, nunca a pasta inteira (ela tem PRDs, prompts e zips antigos). O pacote é `doseplus-vX.Y.Z-netlify.zip` (ignorado pelo git), com `index.html` na raiz e exatamente estes arquivos:
 
-**CLI opcional:** `netlify deploy --prod --dir=.`
+`_headers`, `index.html`, `manifest.json`, `sw.js`, `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png`, `favicon-16.png`, `favicon-32.png`, `favicon.ico`, `og-image.png`
 
-**Local:** `npx serve .` ou `python -m http.server 8080`
+**Manual:** painel da Netlify → projeto `doseplus` → **Deploys** → arraste o zip.
 
-> Service Worker só registra em HTTPS ou `localhost`. Via `file://` o app funciona via localStorage mas sem cache SW.
-> O arquivo `_headers` acompanha o deploy manual para impedir cache antigo do `index.html` e do Service Worker.
+**CLI:** extraia o zip numa pasta limpa e publique essa pasta:
+
+```sh
+netlify deploy --prod --no-build --dir=<pasta-limpa> --site 0a3b89a9-4e0b-4d59-8b6c-4c4dcd3e8a19
+```
+
+> ⚠️ Não use `netlify deploy --dir=.` — publicaria documentos internos e zips junto com o app.
+
+**Local:** `npx serve .` ou `python3 -m http.server 8080`. O Service Worker só registra em HTTPS ou `localhost`; via `file://` o app funciona, mas sem cache offline.
+
+O `_headers` (e o `netlify.toml`) mandam `no-cache` em `/`, `index.html` e `sw.js`, para o navegador sempre checar a versão nova.
+
+### Checklist de cada versão
+
+Atualizar juntos, sempre:
+1. `APP_VERSION` no `index.html`.
+2. `CACHE` (`dosecheck-v` + versão) e `ASSETS` no `sw.js` — o `node test.js` falha se divergirem ou se faltar arquivo.
+3. Entrada nova no `CHANGELOG.md`, com trade-offs.
+4. "Versão atual" neste README.
+5. Gerar o zip `doseplus-vX.Y.Z-netlify.zip` e publicar.
 
 ---
 
-## Migração de dados
+## Dados e migração
 
-Se você já usava o **TG Monitor v1/v2** (só tirzepatida), o app migra automaticamente:
-- Lê `tg_monitor_v2` ou `tg_monitor_v1` do localStorage
-- Marca todas as aplicações antigas como `drugId: "mounjaro"`
-- Grava em `glp_monitor_v3`
-- Nenhum dado perdido
+- Tudo fica **no aparelho**: IndexedDB `glp_monitor` (fonte da verdade) com espelho em `localStorage` na chave `glp_monitor_v3` (nome mantido por compatibilidade). O app pede armazenamento persistente (`navigator.storage.persist()`) e mostra o resultado nas Preferências.
+- Schema versionado (`SCHEMA_VERSION = 5`, campo `_v`). Migrações 1→5 rodam automaticamente, com backup antes de migrar; se uma migração falhar, o app entra em modo somente-leitura e não apaga nada.
+- Quem usava o **TG Monitor v1/v2** (só tirzepatida, chaves `tg_monitor_v1`/`tg_monitor_v2`) é migrado sozinho: as aplicações antigas viram `drugId: "mounjaro"` e as chaves legadas são removidas só depois da migração dar certo.
+- "Forçar atualização" e o Service Worker **nunca** tocam nesses dados.
+
+---
+
+## Testes
+
+```sh
+node test.js
+```
+
+Sem dependências: extrai o JS do `index.html` e roda em sandbox com DOM e IndexedDB simulados. Cobre `esc()` contra XSS, validação de faixas, migrações 1→5, pausa/retomada, rollback da escrita dupla, envelope/checksum do backup, regressão do `analyzeCase()` e a sincronia versão ↔ cache ↔ assets. Precisa passar 100% antes de qualquer entrega.
 
 ---
 
@@ -112,11 +147,11 @@ Tipografia: **Fraunces** (display editorial) + **Inter Tight** (UI) + **JetBrain
 
 ## Próximos passos sugeridos
 
-- `localStorage` → **IndexedDB** (idb-keyval) para +1MB de dados
-- Firebase Firestore para sync multi-device
+- Sync multi-device (exige backend; a camada `Store` já deixa a interface plugável)
 - Capacitor wrap → .ipa/.aab (App Store/Play Store)
-- Lembretes push via Web Notifications API
+- Lembretes push via Web Notifications API (hoje os alertas são sonoros/visuais dentro do app)
 - OCR de rótulo de caneta + reconhecimento de voz para ditado de aplicação
+- Remover o círculo vermelho de marcador da v2.6.1 (`.brand-mark::after`) quando não for mais necessário
 
 ---
 

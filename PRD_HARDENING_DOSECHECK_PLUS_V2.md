@@ -4,7 +4,7 @@
 **Épico:** Segurança, integridade de dados e conformidade LGPD
 **Product Owner:** Breno (Vianexx)
 **Data:** 14/06/2026
-**Status:** Draft para execução
+**Status:** ✅ Concluído — Lotes A, B e C entregues em 15/06/2026 (detalhes no `CHANGELOG.md`). Mantido como registro; a tabela da seção 6 mostra o estado *antes* do épico. Desde então: schema subiu para 5 (v2.5.0) e o cache do SW segue a versão do app (hoje `dosecheck-v2.6.1`).
 **Documento irmão:** [PRD de produto](PRD_VIANEXX_DOSECHECK_PLUS_V2.md) · [Prompt de execução](PROMPT-glp-monitor-hardening-v2.md)
 
 ---

@@ -2,6 +2,15 @@
 
 Formato: épico de hardening executado em lotes (ver [PRD](PRD_HARDENING_DOSECHECK_PLUS_V2.md) e [prompt](PROMPT-glp-monitor-hardening-v2.md)).
 
+## [Docs] — 2026-11-03 — Documentação alinhada ao estado atual
+
+- README: nomes do produto, stack real (IndexedDB + espelho, SRI), funcionalidades de pausa/PIN/backup/atualização, seção de Deploy (conta, projeto, lista exata do zip, aviso contra `netlify deploy --dir=.`), checklist de versão, dados e migração (schema 5), testes.
+- AGENTS.md: site/repositório/versão, arquivos novos, `Store`/`Sec`/`applicationPauses`/schema 5, épico de segurança marcado como concluído, testes 1→5 e checklist de release/deploy.
+- CLAUDE.md: atalho de release/deploy e links para prompt v2.6.1 e CHANGELOG.
+- PRDs e prompts: status (concluído/em execução) com o que já foi entregue; conteúdo original preservado como registro.
+- `test.js`: cabeçalho de cobertura atualizado (sem mudança de teste).
+- `PRD_VIANEXX…md` e `.vscode/settings.json` voltaram às quebras de linha LF do repositório (o editor tinha convertido para CRLF; conteúdo idêntico).
+
 ## [2.6.1] — 2026-11-03 — Versão visível, atualização forçada e ícones do navegador
 
 ### Versão e atualização
@@ -23,6 +32,9 @@ Formato: épico de hardening executado em lotes (ver [PRD](PRD_HARDENING_DOSECHE
 ### Sincronia de versão
 - Pasta do projeto e pacotes de deploy renomeados para o nome real do site (`doseplus.netlify.app`): pasta `doseplus/`, zips `doseplus-vX.Y.Z-netlify.zip`.
 - `test.js`: falha se `APP_VERSION` ≠ sufixo do `CACHE` do `sw.js` ou se algum arquivo de `ASSETS` não existir. AGENTS/CLAUDE/README atualizados.
+
+### Publicação
+- Publicado em produção (doseplus.netlify.app) em 2026-11-03 a partir de pasta limpa com o conteúdo do zip; commit `53968e1`.
 
 ### Trade-offs
 - Quem está na v2.6.0 ainda precisa tocar em "Atualizar" no banner uma vez: a estratégia network-first só vale depois que o SW v2.6.1 estiver ativo.

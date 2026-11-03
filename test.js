@@ -6,10 +6,12 @@
  * roda em sandbox `vm` com stubs de DOM + IndexedDB em memória.
  * Funções/vars de topo (function esc / var Store…) ficam no global.
  *
- * Cobertura por lote:
+ * Cobertura:
  *   LOTE A → esc() vs XSS, validação de ranges                 [ATIVO]
  *   LOTE B → migrações 1→5, rollback da escrita dupla          [ATIVO]
- *   LOTE C → checksum export/import, regressão analyzeCase()   [SCAFFOLD]
+ *   v2.5   → pausa/retomada exclusiva das aplicações           [ATIVO]
+ *   LOTE C → checksum export/import, regressão analyzeCase()   [ATIVO]
+ *   v2.6.1 → APP_VERSION ↔ CACHE do sw.js ↔ ASSETS existentes  [ATIVO]
  * ============================================================= */
 
 'use strict';
